@@ -119,8 +119,8 @@ app.get('/api', (req, res) => res.json({ message: 'FitForge API' }));
 app.get('/api/seed-user', async (req, res) => {
   try {
     const db = await getDb();
-    const testEmail = 'aditya@fitforge.com';
-    const testPassword = 'FitForge123!';
+    const testEmail = 'adityabhatnagar08@gmail.com';
+    const testPassword = 'Asdfghjkl123@';
     
     // Check if user already exists
     const existing = await db.collection('users').findOne({ email: testEmail });
