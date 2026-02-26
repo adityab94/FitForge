@@ -115,6 +115,50 @@ async function seedUserData(db, userId) {
 
 app.get('/api', (req, res) => res.json({ message: 'FitForge API' }));
 
+// Seed test user endpoint - creates a test account
+app.get('/api/seed-user', async (req, res) => {
+  try {
+    const db = await getDb();
+    const testEmail = 'aditya@fitforge.com';
+    const testPassword = 'FitForge123!';
+    
+    // Check if user already exists
+    const existing = await db.collection('users').findOne({ email: testEmail });
+    if (existing) {
+      return res.json({ message: 'Test user already exists', email: testEmail, password: testPassword });
+    }
+    
+    const hashed = await bcrypt.hash(testPassword, 10);
+    const user = { 
+      id: uuidv4(), 
+      email: testEmail, 
+      name: 'Aditya', 
+      password: hashed, 
+      avatarUrl: '', 
+      createdAt: new Date().toISOString() 
+    };
+    await db.collection('users').insertOne({ ...user });
+    await db.collection('profiles').insertOne({ 
+      id: uuidv4(), 
+      user_id: user.id, 
+      name: 'Aditya', 
+      weight: 90.0, 
+      heightCm: 175.0, 
+      age: 30, 
+      gender: 'male', 
+      calTarget: 1800, 
+      goalKg: 80.0, 
+      avatarUrl: '', 
+      createdAt: new Date().toISOString() 
+    });
+    await seedUserData(db, user.id);
+    
+    res.json({ message: 'Test user created!', email: testEmail, password: testPassword });
+  } catch (e) { 
+    res.status(500).json({ detail: e.message }); 
+  }
+});
+
 // Auth
 app.post('/api/auth/register', async (req, res) => {
   try {
