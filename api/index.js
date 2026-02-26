@@ -132,7 +132,7 @@ app.get('/api/seed-user', async (req, res) => {
     const user = { 
       id: uuidv4(), 
       email: testEmail, 
-      name: 'Aditya', 
+      name: 'Aditya Bhatnagar', 
       password: hashed, 
       avatarUrl: '', 
       createdAt: new Date().toISOString() 
@@ -141,7 +141,7 @@ app.get('/api/seed-user', async (req, res) => {
     await db.collection('profiles').insertOne({ 
       id: uuidv4(), 
       user_id: user.id, 
-      name: 'Aditya', 
+      name: 'Aditya Bhatnagar', 
       weight: 90.0, 
       heightCm: 175.0, 
       age: 30, 
