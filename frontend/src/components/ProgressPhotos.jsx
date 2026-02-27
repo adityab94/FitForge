@@ -9,7 +9,7 @@ export default function ProgressPhotos() {
   const [uploading, setUploading] = useState(false);
   const [compareIdx, setCompareIdx] = useState(0);
   const fileRef = useRef(null);
-  const API = process.env.REACT_APP_BACKEND_URL;
+  const API = process.env.REACT_APP_BACKEND_URL || '';
 
   useEffect(() => {
     getProgressPhotos().then(data => {

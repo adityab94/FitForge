@@ -29,7 +29,7 @@ export default function Header({ onOpenProfile }) {
     }
   };
 
-  const API = process.env.REACT_APP_BACKEND_URL;
+  const API = process.env.REACT_APP_BACKEND_URL || '';
   const avatarSrc = profile?.avatarUrl
     ? (profile.avatarUrl.startsWith('http') ? profile.avatarUrl : `${API}/api/files/${profile.avatarUrl}`)
     : (user?.avatarUrl || 'https://images.unsplash.com/photo-1627687501812-47b459c81345?w=100&h=100&fit=crop&crop=face');
