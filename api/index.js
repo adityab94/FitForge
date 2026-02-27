@@ -121,6 +121,29 @@ async function seedUserData(db, userId) {
 
 app.get('/api', (req, res) => res.json({ message: 'FitForge API' }));
 
+// Debug endpoint to check environment
+app.get('/api/debug', (req, res) => {
+  res.json({
+    has_mongo_url: !!process.env.MONGO_URL,
+    has_mongodb_uri: !!process.env.MONGODB_URI,
+    has_db_name: !!process.env.DB_NAME,
+    db_name: process.env.DB_NAME || 'fitforge (default)',
+    has_jwt_secret: !!process.env.JWT_SECRET,
+    node_env: process.env.NODE_ENV
+  });
+});
+
+// Test MongoDB connection
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const db = await getDb();
+    await db.command({ ping: 1 });
+    res.json({ status: 'MongoDB connected successfully!' });
+  } catch (e) {
+    res.status(500).json({ error: e.message, stack: e.stack });
+  }
+});
+
 // Seed test user endpoint - creates a test account
 app.get('/api/seed-user', async (req, res) => {
   try {
