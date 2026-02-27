@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && yarn install && yarn build",
+  "buildCommand": "cd api && npm install && cd ../frontend && yarn install && yarn build",
   "outputDirectory": "frontend/build",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
