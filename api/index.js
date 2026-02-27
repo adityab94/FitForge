@@ -28,10 +28,16 @@ async function getDb() {
     if (!MONGO_CONNECTION_STRING) {
       throw new Error('MongoDB connection string not found. Set MONGO_URL or MONGODB_URI environment variable.');
     }
-    cachedClient = new MongoClient(MONGO_CONNECTION_STRING, { maxPoolSize: 10, serverSelectionTimeoutMS: 5000 });
+    console.log('Connecting to MongoDB...');
+    cachedClient = new MongoClient(MONGO_CONNECTION_STRING, { 
+      maxPoolSize: 10, 
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000
+    });
     await cachedClient.connect();
+    console.log('MongoDB connected successfully');
   }
-  return cachedClient.db(process.env.DB_NAME);
+  return cachedClient.db(process.env.DB_NAME || 'fitforge');
 }
 
 // ── JWT ─────────────────────────────────────────────────────────────────────
