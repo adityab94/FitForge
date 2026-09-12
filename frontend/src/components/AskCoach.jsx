@@ -105,6 +105,7 @@ export default function AskCoach({ variant = 'full' }) {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => () => { stopListening(); stopSpeaking(); }, []);
 
   // Compact variant - inline pill/button
