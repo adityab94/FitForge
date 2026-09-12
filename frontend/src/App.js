@@ -17,6 +17,7 @@ import ProfileModal from './components/ProfileModal';
 import LoginPage from './components/LoginPage';
 import MotivationalQuote from './components/MotivationalQuote';
 import AICoach from './components/AICoach';
+import SleepCard from './components/SleepCard';
 import { Loader2, Zap } from 'lucide-react';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -67,6 +68,7 @@ function Dashboard() {
         <HeroSummary onOpenProfile={() => setProfileOpen(true)} />
         <WeightChart />
         <DataCards />
+        <SleepCard />
         <AICoach />
         <BodyComposition />
         <WorkoutHeatmap />
