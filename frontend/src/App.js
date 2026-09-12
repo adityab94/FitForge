@@ -83,7 +83,7 @@ function AuthGate() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #FFF3E0 0%, #FFCAB1 55%, #FFB088 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #FFFBF5 0%, #FFEEDC 100%)' }}>
         <Loader2 size={32} className="animate-spin" style={{ color: '#FF5B04' }} />
       </div>
     );

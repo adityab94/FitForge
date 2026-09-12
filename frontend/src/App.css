@@ -4,7 +4,7 @@
 .app-bg {
   min-height: 100vh;
   position: relative;
-  background: linear-gradient(160deg, #FFF3E0 0%, #FFE0BF 25%, #FFCAB1 55%, #FFB088 100%);
+  background: linear-gradient(160deg, #FFFBF5 0%, #FFF5EB 40%, #FFEEDC 100%);
   background-attachment: fixed;
 }
 
@@ -16,7 +16,7 @@
   width: 70vw;
   height: 70vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 91, 4, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 91, 4, 0.05) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -29,7 +29,7 @@
   width: 60vw;
   height: 60vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 179, 138, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 179, 138, 0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }

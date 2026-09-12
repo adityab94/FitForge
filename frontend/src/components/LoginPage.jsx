@@ -70,7 +70,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(160deg, #FFF3E0 0%, #FFE0BF 25%, #FFCAB1 55%, #FFB088 100%)' }} data-testid="login-page">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(160deg, #FFFBF5 0%, #FFF5EB 40%, #FFEEDC 100%)' }} data-testid="login-page">
       <div className="w-full max-w-sm">
         <div className="glass-card p-8 anim-slide-up" style={{ background: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,91,4,0.15)' }}>
           <div className="text-center mb-8">
