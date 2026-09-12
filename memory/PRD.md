@@ -29,6 +29,7 @@ Personal PWA fitness tracker (single user, PIN 858608). Cloned from https://gith
 - [x] Auto rest day after 10 PM
 - [x] Animated StreakFlame widget with 6 tiers (cold → legendary)
 - [x] BarcodeScanner: camera + Open Food Facts lookup + one-tap log
+- [x] VoiceLog: Web Speech API + Gemini parses "logged 30 min bench + 400 cal chicken bowl" into multi-action logs
 - [x] Removed bloat: MotivationalQuote, BodyComposition
 
 ## Env Vars (Vercel)

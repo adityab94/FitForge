@@ -20,7 +20,8 @@ import DailyFocus from './components/DailyFocus';
 import StreakFlame from './components/StreakFlame';
 import SleepWeightChart from './components/SleepWeightChart';
 import BarcodeScanner from './components/BarcodeScanner';
-import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon, ScanBarcode } from 'lucide-react';
+import VoiceLog from './components/VoiceLog';
+import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon, ScanBarcode, Mic } from 'lucide-react';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -68,6 +69,7 @@ function Dashboard() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [smartLogOpen, setSmartLogOpen] = useState(false);
   const [barcodeOpen, setBarcodeOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [tab, setTab] = useState('today');
 
   // Auto-log rest day: if past 10pm and no workout today, log a Rest day once
@@ -130,6 +132,19 @@ function Dashboard() {
                   Quick Log Day
                 </button>
                 <button
+                  onClick={() => setVoiceOpen(true)}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{
+                    background: 'rgba(255,255,255,0.7)',
+                    color: '#C7522A',
+                    border: '1.5px solid rgba(199,82,42,0.25)'
+                  }}
+                  data-testid="voice-btn"
+                  title="Voice log"
+                >
+                  <Mic size={16} strokeWidth={2.5} />
+                </button>
+                <button
                   onClick={() => setBarcodeOpen(true)}
                   className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                   style={{
@@ -141,7 +156,6 @@ function Dashboard() {
                   title="Scan food barcode"
                 >
                   <ScanBarcode size={16} strokeWidth={2.5} />
-                  Scan
                 </button>
               </div>
             </div>
@@ -172,6 +186,7 @@ function Dashboard() {
       <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} />
       <SmartDayLogger open={smartLogOpen} onClose={() => setSmartLogOpen(false)} />
       <BarcodeScanner open={barcodeOpen} onClose={() => setBarcodeOpen(false)} />
+      <VoiceLog open={voiceOpen} onClose={() => setVoiceOpen(false)} />
     </div>
   );
 }

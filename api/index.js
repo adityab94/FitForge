@@ -774,6 +774,50 @@ app.get('/api/ai/latest/:type', requireAuth, async (req, res) => {
   } catch (e) { res.status(500).json({ detail: e.message }); }
 });
 
+// Voice Log parser - transcribes natural speech into structured actions using Gemini
+app.post('/api/ai/voice-parse', requireAuth, async (req, res) => {
+  try {
+    const { transcript } = req.body;
+    if (!transcript || typeof transcript !== 'string') return res.status(400).json({ detail: 'transcript required' });
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+
+    const prompt = `You are a fitness data parser. The user spoke this into their fitness app:
+
+"${transcript}"
+
+Extract structured actions from what they said. Support these action types:
+- workout: { type: string (concise, e.g. "Chest + Triceps", "Running"), duration: number (minutes), calories: number (estimate if not stated based on type & duration) }
+- nutrition: { calories: number, carbs: number (g), protein: number (g), fat: number (g) } - macros optional (0 if unknown)
+- weight: { weight: number (kg) - assume kg unless "lbs"/"pounds" stated, then convert)
+- water: { glasses: number - total glasses today, not increment }
+- steps: { steps: number }
+
+Rules:
+- If they say "logged X min bench" -> workout type "Bench Press", duration X
+- If they say "400 cal chicken bowl" -> nutrition { calories: 400 }
+- If they say "weighed 87.5" -> weight { weight: 87.5 }
+- If they say "5 glasses of water" -> water { glasses: 5 }
+- If they say "8000 steps" -> steps { steps: 8000 }
+- Multiple actions in one sentence are all extracted
+- If a value is unclear, omit that action
+
+Respond with STRICT JSON only:
+{
+  "actions": [
+    { "type": "workout|nutrition|weight|water|steps", ...fields }
+  ],
+  "understood": "one line summary of what you interpreted"
+}`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { actions: [], understood: text }; }
+    res.json(parsed);
+  } catch (e) { console.error('Voice parse error:', e); res.status(500).json({ detail: e.message }); }
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 // APPLE HEALTH SYNC (via iOS Shortcut)
 // ═══════════════════════════════════════════════════════════════════════════
