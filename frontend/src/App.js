@@ -21,6 +21,7 @@ import StreakFlame from './components/StreakFlame';
 import SleepWeightChart from './components/SleepWeightChart';
 import BarcodeScanner from './components/BarcodeScanner';
 import VoiceLog from './components/VoiceLog';
+import AskCoach from './components/AskCoach';
 import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon, ScanBarcode, Mic } from 'lucide-react';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -166,6 +167,11 @@ function Dashboard() {
 
         {tab === 'trends' && (
           <>
+            <div className="px-4 md:px-6 pt-6" data-testid="ask-coach-trends-wrap">
+              <div className="max-w-5xl mx-auto">
+                <AskCoach variant="compact" />
+              </div>
+            </div>
             <WeightChart />
             <SleepWeightChart />
             <SleepCard />
@@ -175,7 +181,12 @@ function Dashboard() {
         )}
 
         {tab === 'ai' && (
-          <AICoach />
+          <div className="px-4 md:px-6 pt-6 space-y-6" data-testid="ai-tab-content">
+            <div className="max-w-5xl mx-auto">
+              <AskCoach variant="full" />
+            </div>
+            <AICoach />
+          </div>
         )}
 
         {tab === 'history' && (

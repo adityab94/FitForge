@@ -818,6 +818,45 @@ Respond with STRICT JSON only:
   } catch (e) { console.error('Voice parse error:', e); res.status(500).json({ detail: e.message }); }
 });
 
+// Voice Coach Query - conversational answers to fitness questions, based on user's data
+app.post('/api/ai/voice-query', requireAuth, async (req, res) => {
+  try {
+    const { question } = req.body;
+    if (!question || typeof question !== 'string') return res.status(400).json({ detail: 'question required' });
+    const db = await getDb();
+    const data = await gatherUserData(db, req.userId, 14); // 14 days of context
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+
+    const prompt = `You are a warm, direct fitness coach speaking aloud through a phone. Answer the user's spoken question in a CONVERSATIONAL, natural tone — as if you're a real coach on a voice call. Keep it SHORT (2-4 sentences max, ~40 words). No lists, no markdown, no bullet points — just spoken flowing sentences.
+
+USER QUESTION: "${question}"
+
+USER PROFILE:
+- Weight: ${data.profile?.weight}kg, Goal: ${data.profile?.goalKg}kg
+- Height: ${data.profile?.heightCm}cm, Age: ${data.profile?.age}, Gender: ${data.profile?.gender}
+- Daily calorie target: ${data.profile?.calTarget}
+
+LAST 14 DAYS OF DATA:
+Weights: ${JSON.stringify(data.weights.map(w => ({ date: w.date, weight: w.weight })))}
+Workouts: ${JSON.stringify(data.workouts.map(w => ({ date: w.date, type: w.type, duration: w.duration, calories: w.calories })))}
+Nutrition: ${JSON.stringify(data.nutrition.map(n => ({ date: n.date, calories: n.total?.calories, protein: n.total?.protein })))}
+Steps: ${JSON.stringify(data.steps)}
+
+Respond with STRICT JSON only (no markdown, no code fences):
+{
+  "answer": "your natural spoken response — 2-4 sentences, no lists",
+  "one_line_summary": "3-8 word gist for on-screen display"
+}`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { answer: text, one_line_summary: 'Coach response' }; }
+    res.json(parsed);
+  } catch (e) { console.error('Voice query error:', e); res.status(500).json({ detail: e.message }); }
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 // APPLE HEALTH SYNC (via iOS Shortcut)
 // ═══════════════════════════════════════════════════════════════════════════
