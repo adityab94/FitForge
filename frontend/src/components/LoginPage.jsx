@@ -72,7 +72,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(160deg, #FFFBF5 0%, #FFF5EB 40%, #FFEEDC 100%)' }} data-testid="login-page">
       <div className="w-full max-w-sm">
-        <div className="glass-card p-8 anim-slide-up" style={{ background: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,91,4,0.15)' }}>
+        <div className="glass-card p-8 anim-slide-up" style={{ background: 'rgba(255,255,255,0.55)', borderColor: 'rgba(217,119,87,0.15)' }}>
           <div className="text-center mb-8">
             <img
               src="https://customer-assets.emergentagent.com/job_fittrack-pro-64/artifacts/czi1f9en_Fit%20%281%29.png"
@@ -80,7 +80,7 @@ export default function LoginPage() {
               className="w-20 h-20 mx-auto mb-4 object-cover rounded-full"
               data-testid="login-logo-image"
             />
-            <h1 className="text-4xl font-bold tracking-tight" style={{ fontFamily: 'Outfit, sans-serif', color: '#FF5B04' }} data-testid="login-logo">
+            <h1 className="text-4xl font-bold tracking-tight" style={{ fontFamily: 'Outfit, sans-serif', color: '#D97757' }} data-testid="login-logo">
               FitForge
             </h1>
             <p className="text-xs mt-2" style={{ color: 'rgba(61,31,10,0.55)' }}>
@@ -90,7 +90,7 @@ export default function LoginPage() {
 
           {loading ? (
             <div className="flex items-center justify-center py-6">
-              <Loader2 size={28} className="animate-spin" style={{ color: '#FF5B04' }} />
+              <Loader2 size={28} className="animate-spin" style={{ color: '#D97757' }} />
             </div>
           ) : (
             <>
@@ -108,7 +108,7 @@ export default function LoginPage() {
                     className="w-11 h-14 text-center text-2xl font-bold rounded-xl transition-all focus:outline-none"
                     style={{
                       background: 'rgba(255,255,255,0.55)',
-                      border: `1.5px solid ${error ? '#ef4444' : digit ? '#FF5B04' : 'rgba(255,91,4,0.15)'}`,
+                      border: `1.5px solid ${error ? '#ef4444' : digit ? '#D97757' : 'rgba(217,119,87,0.15)'}`,
                       color: '#3D1F0A',
                       fontFamily: 'Outfit, sans-serif'
                     }}
