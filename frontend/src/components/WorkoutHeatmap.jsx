@@ -32,9 +32,9 @@ export default function WorkoutHeatmap() {
 
   const intensityColors = {
     0: 'rgba(255,255,255,0.5)',
-    1: 'rgba(184,84,60,0.25)',
-    2: 'rgba(184,84,60,0.5)',
-    3: '#B8543C',
+    1: 'rgba(199,82,42,0.25)',
+    2: 'rgba(199,82,42,0.5)',
+    3: '#C7522A',
   };
 
   const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -48,8 +48,8 @@ export default function WorkoutHeatmap() {
         <div className="glass-card p-4 md:p-6">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl" style={{ background: 'rgba(184,84,60,0.1)' }}>
-                <CalendarDays size={18} style={{ color: '#B8543C' }} strokeWidth={1.5} />
+              <div className="p-2 rounded-xl" style={{ background: 'rgba(199,82,42,0.1)' }}>
+                <CalendarDays size={18} style={{ color: '#C7522A' }} strokeWidth={1.5} />
               </div>
               <div>
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="heatmap-title">
@@ -60,7 +60,7 @@ export default function WorkoutHeatmap() {
             </div>
             <div className="flex items-center gap-4 text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>
               <span><strong style={{ color: '#3D1F0A' }}>{totalWorkouts}</strong> workouts</span>
-              <span><strong style={{ color: '#B8543C' }}>{totalCalories.toLocaleString()}</strong> cal</span>
+              <span><strong style={{ color: '#C7522A' }}>{totalCalories.toLocaleString()}</strong> cal</span>
               <span><strong style={{ color: '#075056' }}>{activeDays}</strong> active days</span>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function WorkoutHeatmap() {
                             data-testid={`heatmap-cell-${day.date}`}
                           />
                         </TooltipTrigger>
-                        <TooltipContent side="top" className="text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(184,84,60,0.15)' }}>
+                        <TooltipContent side="top" className="text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(199,82,42,0.15)' }}>
                           <p className="font-semibold">{day.date}</p>
                           {day.count > 0 ? (
                             <p>{day.count} workout{day.count > 1 ? 's' : ''} · {day.calories}cal · {day.duration}min</p>

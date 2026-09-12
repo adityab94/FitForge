@@ -12,7 +12,7 @@ function InfoTip({ text }) {
             <Info size={11} style={{ color: 'rgba(61,31,10,0.45)' }} />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[200px] text-[11px] leading-relaxed" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(184,84,60,0.15)' }}>
+        <TooltipContent side="top" className="max-w-[200px] text-[11px] leading-relaxed" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(199,82,42,0.15)' }}>
           {text}
         </TooltipContent>
       </Tooltip>
@@ -56,7 +56,7 @@ function BMIGauge({ bmi, color }) {
   const colorMap = {
     blue: '#3D1F0A',
     green: '#075056',
-    orange: '#B8543C',
+    orange: '#C7522A',
     red: '#EF4444'
   };
   const gaugeColor = colorMap[color] || '#3D1F0A';
@@ -67,7 +67,7 @@ function BMIGauge({ bmi, color }) {
   return (
     <div className="relative w-20 h-20 mx-auto mb-2">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-[135deg]">
-        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(184,84,60,0.1)" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} />
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(199,82,42,0.1)" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} />
         <circle cx="50" cy="50" r="38" fill="none" stroke={gaugeColor} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 6px ${gaugeColor}50)` }} />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -80,12 +80,12 @@ function BMIGauge({ bmi, color }) {
 function HealthScoreRing({ score }) {
   const circumference = 2 * Math.PI * 32;
   const dashOffset = circumference - (score / 100) * circumference;
-  const color = score >= 70 ? '#075056' : score >= 40 ? '#B8543C' : '#EF4444';
+  const color = score >= 70 ? '#075056' : score >= 40 ? '#C7522A' : '#EF4444';
 
   return (
     <div className="relative w-[76px] h-[76px]">
       <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
-        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(184,84,60,0.1)" strokeWidth="5" />
+        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(199,82,42,0.1)" strokeWidth="5" />
         <circle cx="40" cy="40" r="32" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 6px ${color}50)` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -103,7 +103,7 @@ function WaterTracker({ glasses, onUpdate }) {
       <button onClick={() => onUpdate(Math.max(glasses - 1, 0))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#3D1F0A' }} data-testid="water-minus">-</button>
       <div className="flex gap-0.5">
         {Array.from({ length: goal }).map((_, i) => (
-          <Droplets key={i} size={14} style={{ color: i < glasses ? '#075056' : 'rgba(184,84,60,0.15)', transition: 'color 0.2s' }} />
+          <Droplets key={i} size={14} style={{ color: i < glasses ? '#075056' : 'rgba(199,82,42,0.15)', transition: 'color 0.2s' }} />
         ))}
       </div>
       <button onClick={() => onUpdate(Math.min(glasses + 1, 12))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#3D1F0A' }} data-testid="water-plus">+</button>
@@ -157,12 +157,12 @@ export default function HeroSummary({ onOpenProfile }) {
           {/* BMI */}
           <div className="glass-card p-4 md:p-5 kpi-bmi anim-scale-in delay-100" data-testid="kpi-bmi">
             <div className="flex items-center gap-1 mb-3">
-              <Activity size={14} style={{ color: '#B8543C' }} strokeWidth={2} />
+              <Activity size={14} style={{ color: '#C7522A' }} strokeWidth={2} />
               <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>BMI</span>
               <InfoTip text="Body Mass Index = weight(kg) / height(m)2. Under 18.5 underweight, 18.5-24.9 normal, 25-29.9 overweight, 30+ obese." />
             </div>
             <BMIGauge bmi={stats.bmi} color={stats.bmi_color} />
-            <p className="text-center text-xs mt-1" style={{ color: { blue: '#3D1F0A', green: '#075056', orange: '#B8543C', red: '#EF4444' }[stats.bmi_color] }}>
+            <p className="text-center text-xs mt-1" style={{ color: { blue: '#3D1F0A', green: '#075056', orange: '#C7522A', red: '#EF4444' }[stats.bmi_color] }}>
               {stats.bmi_category}
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function HeroSummary({ onOpenProfile }) {
           {/* Deficit */}
           <div className="glass-card p-4 md:p-5 kpi-deficit anim-scale-in delay-300" data-testid="kpi-deficit">
             <div className="flex items-center gap-1 mb-3">
-              <Target size={14} style={{ color: '#B8543C' }} strokeWidth={2} />
+              <Target size={14} style={{ color: '#C7522A' }} strokeWidth={2} />
               <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>Deficit</span>
               <InfoTip text="Daily caloric deficit = (TDEE + exercise) - food eaten. Positive = burning more than eating (weight loss)." />
             </div>
@@ -208,7 +208,7 @@ export default function HeroSummary({ onOpenProfile }) {
                   </p>
                 );
               }
-              if (!stats.has_nutrition) return <p className="text-[10px] mt-1" style={{ color: 'rgba(184,84,60,0.5)' }}>Log food for exact deficit</p>;
+              if (!stats.has_nutrition) return <p className="text-[10px] mt-1" style={{ color: 'rgba(199,82,42,0.5)' }}>Log food for exact deficit</p>;
               return null;
             })()}
           </div>
@@ -216,12 +216,12 @@ export default function HeroSummary({ onOpenProfile }) {
           {/* Streak */}
           <div className="glass-card p-4 md:p-5 kpi-streak anim-scale-in delay-400" data-testid="kpi-streak">
             <div className="flex items-center gap-1 mb-3">
-              <Flame size={14} style={{ color: '#B8543C' }} strokeWidth={2} />
+              <Flame size={14} style={{ color: '#C7522A' }} strokeWidth={2} />
               <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>Streak</span>
               <InfoTip text="Consecutive days you've logged your weight. Keep the chain going!" />
             </div>
             <div className="flex items-end gap-2 mt-2">
-              <span className="text-3xl md:text-4xl stat-number glow-orange" style={{ color: '#B8543C' }}>
+              <span className="text-3xl md:text-4xl stat-number glow-orange" style={{ color: '#C7522A' }}>
                 <AnimatedNumber value={stats.streak} />
               </span>
               <span className="text-sm pb-1" style={{ color: 'rgba(61,31,10,0.55)' }}>days</span>
@@ -247,7 +247,7 @@ export default function HeroSummary({ onOpenProfile }) {
             <span className="text-3xl" role="img" aria-label="target">&#127919;</span>
             <div>
               <p className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                <span style={{ color: '#B8543C' }}>{stats.days_to_goal} days</span> to {stats.weight_to_lose}kg goal
+                <span style={{ color: '#C7522A' }}>{stats.days_to_goal} days</span> to {stats.weight_to_lose}kg goal
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 {countdown} remaining &middot; ~{stats.weekly_loss}kg/week &middot; deficit: {stats.planned_daily_deficit}cal/day
@@ -257,7 +257,7 @@ export default function HeroSummary({ onOpenProfile }) {
           <button
             onClick={onOpenProfile}
             className="btn-glow px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
-            style={{ background: '#B8543C' }}
+            style={{ background: '#C7522A' }}
             data-testid="edit-profile-button"
           >
             Edit Profile

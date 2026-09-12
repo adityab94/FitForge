@@ -97,7 +97,7 @@ export default function ProfileModal({ open, onOpenChange }) {
             type="submit"
             disabled={saving}
             className="btn-glow w-full py-3 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50"
-            style={{ background: '#B8543C' }}
+            style={{ background: '#C7522A' }}
             data-testid="save-profile-button"
           >
             {saving ? 'Saving...' : 'Save Changes'}

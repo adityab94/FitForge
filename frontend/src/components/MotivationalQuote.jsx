@@ -32,8 +32,8 @@ export default function MotivationalQuote() {
   return (
     <section className="px-4 md:px-6 py-3 anim-fade-in delay-700" data-testid="motivational-quote">
       <div className="max-w-5xl mx-auto">
-        <div className="glass-card-static p-4 md:p-5 flex items-start gap-3" style={{ borderLeft: '2px solid rgba(184,84,60,0.3)' }}>
-          <Quote size={18} style={{ color: '#B8543C', flexShrink: 0, marginTop: 2 }} />
+        <div className="glass-card-static p-4 md:p-5 flex items-start gap-3" style={{ borderLeft: '2px solid rgba(199,82,42,0.3)' }}>
+          <Quote size={18} style={{ color: '#C7522A', flexShrink: 0, marginTop: 2 }} />
           <div>
             <p className="text-sm md:text-base italic leading-relaxed" style={{ color: '#3D1F0A' }}>
               "{quote.text}"

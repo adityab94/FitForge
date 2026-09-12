@@ -18,12 +18,12 @@ function CustomTooltip({ active, payload, selectedRate }) {
   if (!data || data.week === undefined) return null;
 
   return (
-    <div style={{ background: '#1C2D35', border: '1px solid rgba(184,84,60,0.15)', borderRadius: 14, padding: '14px 16px', minWidth: 230, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+    <div style={{ background: '#1C2D35', border: '1px solid rgba(199,82,42,0.15)', borderRadius: 14, padding: '14px 16px', minWidth: 230, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
       <p style={{ fontFamily: 'Outfit, sans-serif', color: '#3D1F0A', fontWeight: 700, fontSize: 13, marginBottom: 8 }}>
         Week {data.week}
       </p>
       {data.actual && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, paddingBottom: 6, borderBottom: '1px solid rgba(184,84,60,0.1)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, paddingBottom: 6, borderBottom: '1px solid rgba(199,82,42,0.1)' }}>
           <span style={{ color: 'rgba(61,31,10,0.6)', fontSize: 11 }}>Recorded</span>
           <span style={{ color: '#3D1F0A', fontWeight: 600, fontSize: 11 }}>{data.actual}kg</span>
         </div>
@@ -47,7 +47,7 @@ function CustomTooltip({ active, payload, selectedRate }) {
         );
       })}
       {data.bmi_075 && (
-        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid rgba(184,84,60,0.1)' }}>
+        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid rgba(199,82,42,0.1)' }}>
           <span style={{ color: 'rgba(228,238,240,0.35)', fontSize: 10 }}>BMI @ 0.75kg/wk: {data.bmi_075}</span>
         </div>
       )}
@@ -122,8 +122,8 @@ export default function WeightChart() {
           {/* Header row */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-5">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#B8543C]/10">
-                <TrendingDown size={18} className="text-[#B8543C]" strokeWidth={1.5} />
+              <div className="p-2 rounded-xl bg-[#C7522A]/10">
+                <TrendingDown size={18} className="text-[#C7522A]" strokeWidth={1.5} />
               </div>
               <div>
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="weight-chart-title">
@@ -145,7 +145,7 @@ export default function WeightChart() {
                     className="flex flex-col items-center px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
                     style={{
                       background: isActive ? `rgba(${rate.colorRgb},0.15)` : 'rgba(255,255,255,0.5)',
-                      border: `1.5px solid ${isActive ? rate.color : 'rgba(184,84,60,0.12)'}`,
+                      border: `1.5px solid ${isActive ? rate.color : 'rgba(199,82,42,0.12)'}`,
                       color: isActive ? rate.color : 'rgba(228,238,240,0.35)',
                       boxShadow: isActive ? `0 0 16px rgba(${rate.colorRgb},0.2)` : 'none',
                     }}
@@ -171,7 +171,7 @@ export default function WeightChart() {
                   className="px-3 py-1.5 rounded-lg text-xs transition-all duration-200"
                   style={{
                     background: isActive ? `rgba(${rate.colorRgb},0.12)` : 'rgba(255,255,255,0.4)',
-                    border: `1px solid ${isActive ? `rgba(${rate.colorRgb},0.4)` : 'rgba(184,84,60,0.1)'}`,
+                    border: `1px solid ${isActive ? `rgba(${rate.colorRgb},0.4)` : 'rgba(199,82,42,0.1)'}`,
                     color: isActive ? rate.color : 'rgba(61,31,10,0.45)',
                     cursor: 'pointer',
                   }}
@@ -221,9 +221,9 @@ export default function WeightChart() {
                 />
 
                 {/* Goal weight horizontal line */}
-                <ReferenceLine y={goalKg} stroke="#B8543C" strokeDasharray="8 4" strokeWidth={1.5}
+                <ReferenceLine y={goalKg} stroke="#C7522A" strokeDasharray="8 4" strokeWidth={1.5}
                   strokeOpacity={0.6}
-                  label={{ value: `Goal: ${goalKg}kg`, position: 'right', fill: '#B8543C', fontSize: 11 }} />
+                  label={{ value: `Goal: ${goalKg}kg`, position: 'right', fill: '#C7522A', fontSize: 11 }} />
 
                 {/* Safe zone upper boundary (0.5 kg/wk) — very subtle dashed */}
                 <Area type="monotone" dataKey="safe_slow" fill="rgba(34,197,94,0.04)"

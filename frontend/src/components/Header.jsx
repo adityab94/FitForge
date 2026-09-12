@@ -46,7 +46,7 @@ export default function Header({ onOpenProfile }) {
           />
           <h1
             className="text-xl md:text-2xl font-bold tracking-tight"
-            style={{ fontFamily: 'Outfit, sans-serif', color: '#B8543C', textShadow: '0 0 20px rgba(184,84,60,0.3)' }}
+            style={{ fontFamily: 'Outfit, sans-serif', color: '#C7522A', textShadow: '0 0 20px rgba(199,82,42,0.3)' }}
             data-testid="logo-text"
           >
             FitForge
@@ -61,7 +61,7 @@ export default function Header({ onOpenProfile }) {
             <LogOut size={18} className="text-slate-400" strokeWidth={1.5} />
           </button>
           <div className="avatar-upload" onClick={handleAvatarClick} data-testid="avatar-upload">
-            <img src={avatarSrc} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: 'rgba(184,84,60,0.15)' }} data-testid="avatar-image" />
+            <img src={avatarSrc} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: 'rgba(199,82,42,0.15)' }} data-testid="avatar-image" />
             <div className="avatar-overlay">
               <Camera size={16} className="text-white" />
             </div>
