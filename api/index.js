@@ -7,9 +7,18 @@ const multer = require('multer');
 const { Readable } = require('stream');
 const webpush = require('web-push');
 const { v4: uuidv4 } = require('uuid');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 4 * 1024 * 1024 } });
+
+// Gemini setup
+const GEMINI_MODEL = 'gemini-2.0-flash-exp';
+const getGemini = () => {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error('GEMINI_API_KEY not configured');
+  return new GoogleGenerativeAI(key);
+};
 
 // Middleware
 app.use(cors({
@@ -565,6 +574,330 @@ app.get('/api/stats', requireAuth, async (req, res) => {
     const healthScore = Math.round(Math.min(bmiScore + Math.min(steps / 10000, 1) * 15 + Math.min(burnedToday / 500, 1) * 10 + (hasNutrition ? Math.max(0, 25 - (Math.abs(eaten - calTarget) / calTarget) * 25) : 12) + Math.min(streak / 7, 1) * 25, 100));
     res.json({ bmi, bmi_category: bmiCat[0], bmi_color: bmiCat[1], bmr, tdee, deficit: Math.round(deficit), burned_today: burnedToday, burned_workouts: burnedWorkouts, steps_calories: stepsCalories, eaten, has_nutrition: hasNutrition, streak, weight_to_lose: Math.round(weightToLose * 10) / 10, days_to_goal: daysToGoal, weeks_to_goal: weeksToGoal, weekly_loss: Math.round(weeklyLoss * 100) / 100, projection, goal_kg: goalKg, current_weight: weight, steps_today: steps, gym_days_saved: gymDaysSaved, water_glasses: waterGlasses, health_score: healthScore, planned_daily_deficit: plannedDailyDeficit, date });
   } catch (e) { console.error('Stats error:', e); res.status(500).json({ detail: e.message }); }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AI FEATURES (Gemini)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Helper: gather user data window (default 7 days)
+async function gatherUserData(db, userId, days = 7) {
+  const start = new Date();
+  start.setDate(start.getDate() - days);
+  const startStr = start.toISOString().split('T')[0];
+  const profile = await db.collection('profiles').findOne({ user_id: userId }, { projection: { _id: 0, password: 0 } });
+  const weights = await db.collection('weight_logs').find({ user_id: userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray();
+  const workouts = await db.collection('workouts').find({ user_id: userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray();
+  const nutrition = await db.collection('nutrition').find({ user_id: userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray();
+  const steps = await db.collection('steps').find({ user_id: userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray();
+  return { profile, weights, workouts, nutrition, steps, days };
+}
+
+// Weekly Coach - analyzes last 7 days and returns personalized advice
+app.post('/api/ai/weekly-coach', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    const data = await gatherUserData(db, req.userId, 7);
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+
+    const prompt = `You are an expert fitness coach analyzing a user's past 7 days. Be direct, warm, specific and concise.
+
+USER PROFILE:
+- Current weight: ${data.profile?.weight}kg, Goal: ${data.profile?.goalKg}kg
+- Height: ${data.profile?.heightCm}cm, Age: ${data.profile?.age}, Gender: ${data.profile?.gender}
+- Daily calorie target: ${data.profile?.calTarget}
+
+WEIGHT LOGS (${data.weights.length}):
+${JSON.stringify(data.weights)}
+
+WORKOUTS (${data.workouts.length}):
+${JSON.stringify(data.workouts.map(w => ({ date: w.date, type: w.type, duration: w.duration, calories: w.calories })))}
+
+NUTRITION LOGS (${data.nutrition.length}):
+${JSON.stringify(data.nutrition.map(n => ({ date: n.date, calories: n.total?.calories, protein: n.total?.protein })))}
+
+STEPS (${data.steps.length}):
+${JSON.stringify(data.steps)}
+
+Respond with STRICT JSON only (no markdown, no code fences):
+{
+  "headline": "One punchy line summarising the week (max 12 words)",
+  "wins": ["specific win 1", "specific win 2"],
+  "gaps": ["specific gap 1", "specific gap 2"],
+  "action_this_week": ["concrete action 1", "concrete action 2", "concrete action 3"],
+  "tone": "one of: crushing | steady | slipping | just_started"
+}`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { headline: text, wins: [], gaps: [], action_this_week: [], tone: 'steady' }; }
+    
+    // Save the report
+    await db.collection('ai_reports').insertOne({
+      id: uuidv4(),
+      user_id: req.userId,
+      type: 'weekly_coach',
+      data: parsed,
+      generated_at: new Date().toISOString()
+    });
+
+    res.json(parsed);
+  } catch (e) { console.error('Weekly coach error:', e); res.status(500).json({ detail: e.message }); }
+});
+
+// Plateau Detector - analyzes last 28 days for weight plateau
+app.post('/api/ai/plateau-detect', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    const data = await gatherUserData(db, req.userId, 28);
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+
+    const prompt = `You are a fitness coach analyzing a possible weight plateau in the past 28 days.
+
+USER PROFILE:
+- Current weight: ${data.profile?.weight}kg, Goal: ${data.profile?.goalKg}kg
+- BMR context: height ${data.profile?.heightCm}cm, age ${data.profile?.age}, ${data.profile?.gender}
+- Daily calorie target: ${data.profile?.calTarget}
+
+WEIGHT LOGS:
+${JSON.stringify(data.weights)}
+
+WORKOUTS:
+${JSON.stringify(data.workouts.map(w => ({ date: w.date, type: w.type, duration: w.duration, calories: w.calories })))}
+
+NUTRITION:
+${JSON.stringify(data.nutrition.map(n => ({ date: n.date, calories: n.total?.calories })))}
+
+STEPS:
+${JSON.stringify(data.steps)}
+
+Analyze the weight trend. Determine if there's a plateau (weight not decreasing over 14+ days). Diagnose specific causes from the data. Respond with STRICT JSON only:
+{
+  "is_plateau": true or false,
+  "trend_summary": "one line describing weight movement",
+  "diagnosis": "2-3 sentences on likely cause",
+  "causes": ["specific cause 1 with data reference", "specific cause 2"],
+  "fixes": ["specific actionable fix 1", "specific actionable fix 2", "specific actionable fix 3"],
+  "severity": "one of: none | mild | moderate | serious"
+}`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { is_plateau: false, trend_summary: text, diagnosis: '', causes: [], fixes: [], severity: 'none' }; }
+
+    await db.collection('ai_reports').insertOne({
+      id: uuidv4(),
+      user_id: req.userId,
+      type: 'plateau_detect',
+      data: parsed,
+      generated_at: new Date().toISOString()
+    });
+
+    res.json(parsed);
+  } catch (e) { console.error('Plateau detect error:', e); res.status(500).json({ detail: e.message }); }
+});
+
+// Body Photo Analyzer - compares two progress photos
+app.post('/api/ai/analyze-photos', requireAuth, async (req, res) => {
+  try {
+    const { photo_a_id, photo_b_id } = req.body;
+    if (!photo_a_id || !photo_b_id) return res.status(400).json({ detail: 'Provide photo_a_id and photo_b_id' });
+    const db = await getDb();
+
+    // Get both photos from GridFS
+    const photoA = await db.collection('progress_photos').findOne({ id: photo_a_id, user_id: req.userId }, { projection: { _id: 0 } });
+    const photoB = await db.collection('progress_photos').findOne({ id: photo_b_id, user_id: req.userId }, { projection: { _id: 0 } });
+    if (!photoA || !photoB) return res.status(404).json({ detail: 'Photo(s) not found' });
+
+    const { data: dataA, contentType: mimeA } = await getFromGridFS(db, photoA.file_id);
+    const { data: dataB, contentType: mimeB } = await getFromGridFS(db, photoB.file_id);
+
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+
+    // Get weight for both dates for context
+    const wA = await db.collection('weight_logs').findOne({ user_id: req.userId, date: photoA.date }, { sort: { timestamp: -1 } });
+    const wB = await db.collection('weight_logs').findOne({ user_id: req.userId, date: photoB.date }, { sort: { timestamp: -1 } });
+
+    const prompt = `You are a supportive body-composition coach. Compare these two progress photos.
+
+Photo A: taken on ${photoA.date}${wA ? `, weight ${wA.weight}kg` : ''} (earlier)
+Photo B: taken on ${photoB.date}${wB ? `, weight ${wB.weight}kg` : ''} (later)
+
+Analyze visible changes in body composition, posture, muscle definition, and overall physique. Be honest, specific, and encouraging. Never comment on face or clothes.
+
+Respond with STRICT JSON only:
+{
+  "overall_change": "one line summary",
+  "visible_changes": ["specific change 1", "specific change 2", "specific change 3"],
+  "areas_of_progress": ["area 1", "area 2"],
+  "areas_to_focus": ["focus area 1 with tip", "focus area 2 with tip"],
+  "encouragement": "one supportive closing line",
+  "confidence": "one of: high | medium | low (based on photo angle/lighting similarity)"
+}`;
+
+    const result = await model.generateContent([
+      prompt,
+      { inlineData: { data: dataA.toString('base64'), mimeType: mimeA } },
+      { inlineData: { data: dataB.toString('base64'), mimeType: mimeB } }
+    ]);
+    const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { overall_change: text, visible_changes: [], areas_of_progress: [], areas_to_focus: [], encouragement: '', confidence: 'low' }; }
+
+    await db.collection('ai_reports').insertOne({
+      id: uuidv4(),
+      user_id: req.userId,
+      type: 'photo_analysis',
+      photo_a_id, photo_b_id,
+      data: parsed,
+      generated_at: new Date().toISOString()
+    });
+
+    res.json(parsed);
+  } catch (e) { console.error('Analyze photos error:', e); res.status(500).json({ detail: e.message }); }
+});
+
+// Get latest AI report of a specific type (weekly_coach | plateau_detect | photo_analysis)
+app.get('/api/ai/latest/:type', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    const doc = await db.collection('ai_reports').findOne(
+      { user_id: req.userId, type: req.params.type },
+      { projection: { _id: 0 }, sort: { generated_at: -1 } }
+    );
+    res.json(doc || null);
+  } catch (e) { res.status(500).json({ detail: e.message }); }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// APPLE HEALTH SYNC (via iOS Shortcut)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Simple pre-shared token for iOS Shortcut auth (personal use)
+const HEALTH_SYNC_TOKEN = process.env.HEALTH_SYNC_TOKEN || 'fitforge-health-858608';
+
+// Ingest data from iOS Shortcut - accepts multiple metrics at once
+app.post('/api/health-sync', async (req, res) => {
+  try {
+    const token = req.headers['x-sync-token'] || req.body.token;
+    if (token !== HEALTH_SYNC_TOKEN) return res.status(401).json({ detail: 'Invalid sync token' });
+
+    const db = await getDb();
+    // Find the single user (personal app) - use the most recent user
+    const user = await db.collection('users').findOne({}, { sort: { createdAt: -1 } });
+    if (!user) return res.status(404).json({ detail: 'No user found' });
+    const userId = user.id;
+    const date = req.body.date || new Date().toISOString().split('T')[0];
+
+    const synced = {};
+
+    // Steps
+    if (req.body.steps != null) {
+      await db.collection('steps').updateOne(
+        { user_id: userId, date },
+        { $set: { user_id: userId, date, steps: Math.round(Number(req.body.steps)) } },
+        { upsert: true }
+      );
+      synced.steps = Math.round(Number(req.body.steps));
+    }
+
+    // Weight (in kg)
+    if (req.body.weight != null) {
+      const w = Number(req.body.weight);
+      await db.collection('weight_logs').insertOne({
+        id: uuidv4(), user_id: userId, weight: w, date,
+        timestamp: new Date().toISOString(), source: 'apple_health'
+      });
+      await db.collection('profiles').updateOne({ user_id: userId }, { $set: { weight: w } });
+      synced.weight = w;
+    }
+
+    // Sleep hours
+    if (req.body.sleep_hours != null) {
+      await db.collection('sleep_logs').updateOne(
+        { user_id: userId, date },
+        { $set: { user_id: userId, date, hours: Number(req.body.sleep_hours), source: 'apple_health' } },
+        { upsert: true }
+      );
+      synced.sleep_hours = Number(req.body.sleep_hours);
+    }
+
+    // Resting heart rate
+    if (req.body.resting_hr != null) {
+      await db.collection('vitals').updateOne(
+        { user_id: userId, date },
+        { $set: { user_id: userId, date, resting_hr: Math.round(Number(req.body.resting_hr)), source: 'apple_health' } },
+        { upsert: true }
+      );
+      synced.resting_hr = Math.round(Number(req.body.resting_hr));
+    }
+
+    // Active energy (calories burned)
+    if (req.body.active_calories != null) {
+      await db.collection('activity').updateOne(
+        { user_id: userId, date },
+        { $set: { user_id: userId, date, active_calories: Math.round(Number(req.body.active_calories)), source: 'apple_health' } },
+        { upsert: true }
+      );
+      synced.active_calories = Math.round(Number(req.body.active_calories));
+    }
+
+    // Workouts array
+    if (Array.isArray(req.body.workouts)) {
+      for (const w of req.body.workouts) {
+        await db.collection('workouts').insertOne({
+          id: uuidv4(), user_id: userId,
+          type: w.type || 'Workout',
+          duration: Math.round(Number(w.duration) || 0),
+          calories: Math.round(Number(w.calories) || 0),
+          notes: w.notes || 'From Apple Health',
+          date, timestamp: new Date().toISOString(), source: 'apple_health'
+        });
+      }
+      synced.workouts = req.body.workouts.length;
+    }
+
+    res.json({ message: 'Health data synced', date, synced });
+  } catch (e) { console.error('Health sync error:', e); res.status(500).json({ detail: e.message }); }
+});
+
+// Get sleep/vitals for the current user (for dashboard use)
+app.get('/api/health/recent', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    const days = parseInt(req.query.days || '7');
+    const start = new Date(); start.setDate(start.getDate() - days);
+    const startStr = start.toISOString().split('T')[0];
+    const [sleep, vitals, activity] = await Promise.all([
+      db.collection('sleep_logs').find({ user_id: req.userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray(),
+      db.collection('vitals').find({ user_id: req.userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray(),
+      db.collection('activity').find({ user_id: req.userId, date: { $gte: startStr } }, { projection: { _id: 0 } }).sort({ date: 1 }).toArray()
+    ]);
+    res.json({ sleep, vitals, activity });
+  } catch (e) { res.status(500).json({ detail: e.message }); }
+});
+
+// Instructions endpoint for iOS Shortcut setup (returns the token + example payload)
+app.get('/api/health-sync/info', requireAuth, (req, res) => {
+  res.json({
+    endpoint: '/api/health-sync',
+    method: 'POST',
+    header: { 'x-sync-token': HEALTH_SYNC_TOKEN, 'Content-Type': 'application/json' },
+    example_body: {
+      date: 'YYYY-MM-DD (optional, defaults to today)',
+      steps: 8500,
+      weight: 88.5,
+      sleep_hours: 7.5,
+      resting_hr: 62,
+      active_calories: 420,
+      workouts: [{ type: 'Running', duration: 30, calories: 300 }]
+    }
+  });
 });
 
 module.exports = app;

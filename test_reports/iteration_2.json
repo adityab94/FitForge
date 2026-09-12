@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only test of new AI Coach section on FitForge dashboard. PIN login (858608) works. AI Coach section renders correctly between DataCards and Body Composition. All 4 tabs (Weekly Coach, Plateau Check, Photo Compare, Apple Health) render, are clickable, and swap panels as expected. Weekly Coach and Plateau tabs show correct copy + action buttons. Photo Compare shows the '<2 photos' empty state. Apple Health tab renders BLANK because the Python backend doesn't expose /api/health-sync/info (404) and the panel is gated on syncInfo being non-null. This matches the request's expected behavior but is a poor UX (clicking the tab appears to do nothing).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AICoach - Apple Health tab", "issue": "Panel renders completely empty when syncInfo is null (Python backend returns 404 on /api/health-sync/info). Users clicking the tab see nothing. Recommend adding an empty/error fallback UI so the tab body is never blank.", "selector": "[data-testid='ai-tab-health']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add fallback empty/error state to Apple Health tab in AICoach.jsx so it doesn't render blank when syncInfo is null.",
+    "Note: existing 404s on /api/ai/latest/weekly_coach, /api/ai/latest/plateau_detect, /api/health-sync/info are silently swallowed via .catch — expected per request (endpoints only on Vercel Node backend)."
+  ],
+  "critical_code_review_comments": [
+    "AICoach.jsx line 274: '{tab === \\'health\\' && syncInfo && (...)}' will render nothing when syncInfo is null. Should render an empty-state/error instead.",
+    "AICoach.jsx uses alert() for error UX (lines 39,48,58). Consider a toast component consistent with rest of app.",
+    "authAxios is recreated on every render (line 23). Move into useMemo or module scope to avoid unnecessary re-instantiation.",
+    "Chart console warnings observed: 'The width(-1) and height(-1) of chart should be greater than 0' — recharts container has 0-dim parent somewhere on dashboard."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (all requested UI checks passed; Apple Health blank state is expected)"},
+  "test_credentials": "PIN: 858608",
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "AI endpoints only exist in /app/api/index.js (Vercel Node), not server.py. Any /api/ai/* or /api/health-sync/* calls return 404 in local preview — do NOT flag as bugs. Apple Health tab blank behavior is by-design guard but poor UX."
+}
