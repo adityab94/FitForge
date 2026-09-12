@@ -2,12 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
-const CORRECT_PIN = '858608';
-const PIN_USER_EMAIL = 'adityabhatnagar08@gmail.com';
-const PIN_USER_PASSWORD = 'Asdfghjkl123@';
-
 export default function LoginPage() {
-  const { loginWithPassword } = useAuth();
+  const { loginWithPin } = useAuth();
   const [pin, setPin] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,17 +47,11 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (enteredPin) => {
-    if (enteredPin !== CORRECT_PIN) {
-      setError('Incorrect PIN');
-      setPin(['', '', '', '', '', '']);
-      inputRefs.current[0]?.focus();
-      return;
-    }
     setLoading(true);
     try {
-      await loginWithPassword(PIN_USER_EMAIL, PIN_USER_PASSWORD);
+      await loginWithPin(enteredPin);
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError(err?.response?.data?.detail || 'Incorrect PIN');
       setPin(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
@@ -125,7 +115,10 @@ export default function LoginPage() {
             </>
           )}
 
-          <p className="text-xs text-center mt-6" style={{ color: 'rgba(61,31,10,0.35)' }}>
+          <p className="text-xs text-center mt-6 italic" style={{ color: 'rgba(61,31,10,0.35)' }} data-testid="pin-hint">
+            Hint: Birth is important
+          </p>
+          <p className="text-xs text-center mt-2" style={{ color: 'rgba(61,31,10,0.35)' }}>
             Track your fitness journey with precision
           </p>
         </div>

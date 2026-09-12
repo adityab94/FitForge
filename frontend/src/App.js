@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '@/App.css';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FitProvider, useFit } from './context/FitContext';
 import Header from './components/Header';
@@ -23,9 +22,6 @@ import BarcodeScanner from './components/BarcodeScanner';
 import VoiceLog from './components/VoiceLog';
 import AskCoach from './components/AskCoach';
 import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon, ScanBarcode, Mic } from 'lucide-react';
-
-// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const TABS = [
   { id: 'today', label: 'Today', icon: Home },
@@ -134,29 +130,33 @@ function Dashboard() {
                 </button>
                 <button
                   onClick={() => setVoiceOpen(true)}
-                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                   style={{
                     background: 'rgba(255,255,255,0.7)',
                     color: '#C7522A',
                     border: '1.5px solid rgba(199,82,42,0.25)'
                   }}
                   data-testid="voice-btn"
-                  title="Voice log"
+                  aria-label="Log today's data by voice"
+                  title="Speak to log workouts, food, weight, water, or steps"
                 >
                   <Mic size={16} strokeWidth={2.5} />
+                  <span className="text-xs">Voice</span>
                 </button>
                 <button
                   onClick={() => setBarcodeOpen(true)}
-                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                   style={{
                     background: 'rgba(255,255,255,0.7)',
                     color: '#C7522A',
                     border: '1.5px solid rgba(199,82,42,0.25)'
                   }}
                   data-testid="scan-btn"
-                  title="Scan food barcode"
+                  aria-label="Scan a food barcode"
+                  title="Scan a food barcode to log nutrition"
                 >
                   <ScanBarcode size={16} strokeWidth={2.5} />
+                  <span className="text-xs">Scan</span>
                 </button>
               </div>
             </div>
@@ -226,11 +226,9 @@ function AuthGate() {
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <AuthGate />
-      </AuthProvider>
-    </GoogleOAuthProvider>
+    <AuthProvider>
+      <AuthGate />
+    </AuthProvider>
   );
 }
 

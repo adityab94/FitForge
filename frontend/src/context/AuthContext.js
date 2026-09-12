@@ -25,26 +25,8 @@ export function AuthProvider({ children }) {
     }
   }, [token, authAxios]);
 
-  const loginWithGoogle = async (credential) => {
-    const res = await axios.post(`${API}/auth/google`, { credential });
-    const { token: newToken, user: userData } = res.data;
-    localStorage.setItem('fitforge_token', newToken);
-    setToken(newToken);
-    setUser(userData);
-    return userData;
-  };
-
-  const register = async (email, password, name) => {
-    const res = await axios.post(`${API}/auth/register`, { email, password, name });
-    const { token: newToken, user: userData } = res.data;
-    localStorage.setItem('fitforge_token', newToken);
-    setToken(newToken);
-    setUser(userData);
-    return userData;
-  };
-
-  const loginWithPassword = async (email, password) => {
-    const res = await axios.post(`${API}/auth/login`, { email, password });
+  const loginWithPin = async (pin) => {
+    const res = await axios.post(`${API}/auth/pin-login`, { pin });
     const { token: newToken, user: userData } = res.data;
     localStorage.setItem('fitforge_token', newToken);
     setToken(newToken);
@@ -59,7 +41,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, loginWithGoogle, loginWithPassword, register, logout, authAxios, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, token, loading, loginWithPin, logout, authAxios, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

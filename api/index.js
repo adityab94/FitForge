@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, GridFSBucket, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const { Readable } = require('stream');
 const webpush = require('web-push');
@@ -108,24 +107,6 @@ async function getVapidKeys(db) {
   return { publicKey: rec.publicKey, privateKey: rec.privateKey };
 }
 
-// ── Seed data ────────────────────────────────────────────────────────────────
-async function seedUserData(db, userId) {
-  const weights = [
-    { id: uuidv4(), user_id: userId, weight: 92.0, date: '2026-01-15', timestamp: '2026-01-15T08:00:00Z' },
-    { id: uuidv4(), user_id: userId, weight: 91.2, date: '2026-01-22', timestamp: '2026-01-22T08:00:00Z' },
-    { id: uuidv4(), user_id: userId, weight: 90.5, date: '2026-01-29', timestamp: '2026-01-29T08:00:00Z' },
-    { id: uuidv4(), user_id: userId, weight: 90.0, date: '2026-02-05', timestamp: '2026-02-05T08:00:00Z' },
-    { id: uuidv4(), user_id: userId, weight: 89.5, date: '2026-02-12', timestamp: '2026-02-12T08:00:00Z' },
-    { id: uuidv4(), user_id: userId, weight: 89.0, date: '2026-02-19', timestamp: '2026-02-19T08:00:00Z' },
-  ];
-  await db.collection('weight_logs').insertMany(weights);
-  await db.collection('workouts').insertMany([
-    { id: uuidv4(), user_id: userId, type: 'Chest + Triceps', duration: 55, calories: 420, notes: 'Heavy bench day', date: '2026-02-17', timestamp: '2026-02-17T10:00:00Z' },
-    { id: uuidv4(), user_id: userId, type: 'HIIT Cardio', duration: 30, calories: 350, notes: 'Sprint intervals', date: '2026-02-18', timestamp: '2026-02-18T07:00:00Z' },
-    { id: uuidv4(), user_id: userId, type: 'Back + Biceps', duration: 50, calories: 380, notes: 'Deadlift PR!', date: '2026-02-19', timestamp: '2026-02-19T10:00:00Z' },
-  ]);
-}
-
 // ── ROUTES ───────────────────────────────────────────────────────────────────
 
 app.get('/api', (req, res) => res.json({ message: 'FitForge API' }));
@@ -153,75 +134,17 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
-// Seed test user endpoint - creates a test account
-app.get('/api/seed-user', async (req, res) => {
+// Auth - PIN is the sole login method for this single-profile personal app
+app.post('/api/auth/pin-login', async (req, res) => {
   try {
+    const { pin } = req.body;
+    const appPin = process.env.APP_PIN;
+    if (!appPin) return res.status(500).json({ detail: 'PIN login not configured' });
+    if (!pin || pin !== appPin) return res.status(401).json({ detail: 'Incorrect PIN' });
     const db = await getDb();
-    const testEmail = 'adityabhatnagar08@gmail.com';
-    const testPassword = 'Asdfghjkl123@';
-    
-    // Check if user already exists
-    const existing = await db.collection('users').findOne({ email: testEmail });
-    if (existing) {
-      return res.json({ message: 'Test user already exists', email: testEmail, password: testPassword });
-    }
-    
-    const hashed = await bcrypt.hash(testPassword, 10);
-    const user = { 
-      id: uuidv4(), 
-      email: testEmail, 
-      name: 'Aditya Bhatnagar', 
-      password: hashed, 
-      avatarUrl: '', 
-      createdAt: new Date().toISOString() 
-    };
-    await db.collection('users').insertOne({ ...user });
-    await db.collection('profiles').insertOne({ 
-      id: uuidv4(), 
-      user_id: user.id, 
-      name: 'Aditya Bhatnagar', 
-      weight: 90.0, 
-      heightCm: 175.0, 
-      age: 30, 
-      gender: 'male', 
-      calTarget: 1800, 
-      goalKg: 80.0, 
-      avatarUrl: '', 
-      createdAt: new Date().toISOString() 
-    });
-    await seedUserData(db, user.id);
-    
-    res.json({ message: 'Test user created!', email: testEmail, password: testPassword });
-  } catch (e) { 
-    res.status(500).json({ detail: e.message }); 
-  }
-});
-
-// Auth
-app.post('/api/auth/register', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
-    if (!email || !password || !name) return res.status(400).json({ detail: 'Name, email and password required' });
-    const db = await getDb();
-    if (await db.collection('users').findOne({ email })) return res.status(400).json({ detail: 'Email already registered' });
-    const hashed = await bcrypt.hash(password, 10);
-    const user = { id: uuidv4(), email, name, password: hashed, avatarUrl: '', createdAt: new Date().toISOString() };
-    await db.collection('users').insertOne({ ...user });
-    await db.collection('profiles').insertOne({ id: uuidv4(), user_id: user.id, name, weight: 90.0, heightCm: 175.0, age: 30, gender: 'male', calTarget: 1800, goalKg: 80.0, avatarUrl: '', createdAt: new Date().toISOString() });
-    await seedUserData(db, user.id);
-    res.json({ token: createToken(user.id), user: { id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl } });
-  } catch (e) { res.status(500).json({ detail: e.message }); }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ detail: 'Email and password required' });
-    const db = await getDb();
-    const user = await db.collection('users').findOne({ email }, { projection: { _id: 0 } });
-    if (!user || !user.password) return res.status(401).json({ detail: 'Invalid email or password' });
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ detail: 'Invalid email or password' });
+    // Single-profile personal app - log in as the one user, same convention as /api/health-sync
+    const user = await db.collection('users').findOne({}, { sort: { createdAt: -1 } });
+    if (!user) return res.status(404).json({ detail: 'No user found' });
     res.json({ token: createToken(user.id), user: { id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl } });
   } catch (e) { res.status(500).json({ detail: e.message }); }
 });
@@ -862,13 +785,14 @@ Respond with STRICT JSON only (no markdown, no code fences):
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Simple pre-shared token for iOS Shortcut auth (personal use)
-const HEALTH_SYNC_TOKEN = process.env.HEALTH_SYNC_TOKEN || 'fitforge-health-858608';
+const HEALTH_SYNC_TOKEN = process.env.HEALTH_SYNC_TOKEN;
 
 // Ingest data from iOS Shortcut - accepts multiple metrics at once
 app.post('/api/health-sync', async (req, res) => {
   try {
+    if (!HEALTH_SYNC_TOKEN) return res.status(500).json({ detail: 'Health sync not configured' });
     const token = req.headers['x-sync-token'] || req.body.token;
-    if (token !== HEALTH_SYNC_TOKEN) return res.status(401).json({ detail: 'Invalid sync token' });
+    if (!token || token !== HEALTH_SYNC_TOKEN) return res.status(401).json({ detail: 'Invalid sync token' });
 
     const db = await getDb();
     // Find the single user (personal app) - use the most recent user
