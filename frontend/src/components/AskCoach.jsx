@@ -91,6 +91,7 @@ export default function AskCoach({ variant = 'full' }) {
   };
 
   const askQuestion = async (question) => {
+    setTranscript(question);
     setPhase('thinking');
     try {
       const { data } = await axios.post(`${API}/ai/voice-query`, { question }, { headers: { Authorization: `Bearer ${token}` } });
