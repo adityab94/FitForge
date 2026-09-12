@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFit } from '../context/FitContext';
-import { Activity, Flame, Target, Zap, Info, Heart, Droplets } from 'lucide-react';
+import { Activity, Flame, Target, Zap, Info, Heart, Droplets, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '../components/ui/tooltip';
 
 function InfoTip({ text }) {
@@ -113,8 +113,24 @@ function WaterTracker({ glasses, onUpdate }) {
 }
 
 export default function HeroSummary({ onOpenProfile }) {
-  const { stats, profile, updateWater } = useFit();
+  const { stats, profile, weights, updateWater } = useFit();
   const [countdown, setCountdown] = useState('');
+
+  // Weekly weight delta - compare latest weight to log ~7 days ago
+  const weeklyDelta = (() => {
+    if (!weights || weights.length < 2) return null;
+    const sorted = [...weights].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const latest = sorted[0]?.weight;
+    const target = new Date(sorted[0].date); target.setDate(target.getDate() - 7);
+    // Find log closest to 7 days before latest
+    let closest = null; let minDiff = Infinity;
+    for (const w of sorted.slice(1)) {
+      const diff = Math.abs(new Date(w.date) - target);
+      if (diff < minDiff) { minDiff = diff; closest = w; }
+    }
+    if (!closest) return null;
+    return { delta: Math.round((latest - closest.weight) * 10) / 10, from: closest.weight };
+  })();
 
   useEffect(() => {
     if (!stats?.days_to_goal) return;
@@ -246,8 +262,18 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="flex items-center gap-3">
             <span className="text-3xl" role="img" aria-label="target">&#127919;</span>
             <div>
-              <p className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                <span style={{ color: '#C7522A' }}>{stats.days_to_goal} days</span> to {stats.weight_to_lose}kg goal
+              <p className="text-lg md:text-xl font-bold flex items-center gap-2 flex-wrap" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <span style={{ color: '#C7522A' }}>{stats.days_to_goal} days</span>
+                <span style={{ color: '#3D1F0A' }}>to {stats.weight_to_lose}kg goal</span>
+                {weeklyDelta && (
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1" style={{
+                    background: weeklyDelta.delta < 0 ? 'rgba(15,118,110,0.15)' : weeklyDelta.delta > 0 ? 'rgba(199,82,42,0.15)' : 'rgba(61,31,10,0.1)',
+                    color: weeklyDelta.delta < 0 ? '#0F766E' : weeklyDelta.delta > 0 ? '#C7522A' : 'rgba(61,31,10,0.6)'
+                  }} data-testid="weekly-delta">
+                    {weeklyDelta.delta < 0 ? <TrendingDown size={11} strokeWidth={2.5} /> : weeklyDelta.delta > 0 ? <TrendingUp size={11} strokeWidth={2.5} /> : <Minus size={11} strokeWidth={2.5} />}
+                    {weeklyDelta.delta === 0 ? 'flat this week' : `${weeklyDelta.delta > 0 ? '+' : ''}${weeklyDelta.delta} kg this week`}
+                  </span>
+                )}
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 {countdown} remaining &middot; ~{stats.weekly_loss}kg/week &middot; deficit: {stats.planned_daily_deficit}cal/day

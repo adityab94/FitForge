@@ -11,10 +11,12 @@ const STEPS = [
 ];
 
 export default function SmartDayLogger({ open, onClose }) {
-  const { logNutritionManual, addSteps, updateWater, addWorkout, selectedDate, profile } = useFit();
+  const { logNutritionManual, addSteps, updateWater, addWorkout, selectedDate, profile, workouts, copyNutritionFromYesterday } = useFit();
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [copyingNutrition, setCopyingNutrition] = useState(false);
+  const [repeatingWorkout, setRepeatingWorkout] = useState(false);
 
   // Nutrition state
   const [nutMode, setNutMode] = useState('total');
@@ -37,6 +39,13 @@ export default function SmartDayLogger({ open, onClose }) {
   const today = new Date().toISOString().split('T')[0];
   const isToday = selectedDate === today;
   const dateLabel = isToday ? 'today' : selectedDate;
+
+  // Yesterday's workouts (most recent from any prior day)
+  const yesterdayWorkout = (() => {
+    if (!workouts?.length) return null;
+    const sorted = [...workouts].filter(w => w.date < selectedDate).sort((a, b) => new Date(b.date) - new Date(a.date));
+    return sorted[0] || null;
+  })();
 
   const calcCalFromMacros = () => {
     const c = parseFloat(carbs) || 0, p = parseFloat(protein) || 0, f = parseFloat(fat) || 0;
@@ -171,6 +180,20 @@ export default function SmartDayLogger({ open, onClose }) {
               {/* Nutrition step */}
               {step === 0 && (
                 <div className="space-y-3">
+                  <button
+                    onClick={async () => {
+                      setCopyingNutrition(true);
+                      try { await copyNutritionFromYesterday(); setStep(s => s + 1); }
+                      catch (e) { alert('No nutrition logged yesterday'); }
+                      setCopyingNutrition(false);
+                    }}
+                    disabled={copyingNutrition}
+                    className="w-full py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                    style={{ background: 'rgba(15,118,110,0.12)', color: '#0F766E', border: '1px dashed rgba(15,118,110,0.3)' }}
+                    data-testid="wizard-copy-nutrition"
+                  >
+                    {copyingNutrition ? <Loader2 size={12} className="animate-spin" /> : '↺'} Same as yesterday
+                  </button>
                   <div className="flex gap-2">
                     {['total', 'macros'].map(m => (
                       <button key={m} onClick={() => setNutMode(m)} data-testid={`wizard-mode-${m}`}
@@ -263,6 +286,25 @@ export default function SmartDayLogger({ open, onClose }) {
               {/* Workout step */}
               {step === 3 && (
                 <div className="space-y-2">
+                  {yesterdayWorkout && (
+                    <button
+                      onClick={async () => {
+                        setRepeatingWorkout(true);
+                        try {
+                          await addWorkout({ type: yesterdayWorkout.type, duration: yesterdayWorkout.duration, calories: yesterdayWorkout.calories, notes: yesterdayWorkout.notes || '' });
+                          setDone(true);
+                          confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#C7522A', '#075056', '#3D1F0A'] });
+                        } catch (e) { console.error(e); }
+                        setRepeatingWorkout(false);
+                      }}
+                      disabled={repeatingWorkout}
+                      className="w-full py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                      style={{ background: 'rgba(15,118,110,0.12)', color: '#0F766E', border: '1px dashed rgba(15,118,110,0.3)' }}
+                      data-testid="wizard-repeat-workout"
+                    >
+                      {repeatingWorkout ? <Loader2 size={12} className="animate-spin" /> : '↺'} Repeat: {yesterdayWorkout.type} ({yesterdayWorkout.duration}min)
+                    </button>
+                  )}
                   <div>
                     <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Workout type</label>
                     <input

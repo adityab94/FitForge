@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '@/App.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -9,24 +9,79 @@ import WeightChart from './components/WeightChart';
 import DataCards from './components/DataCards';
 import DateNav from './components/DateNav';
 import SmartDayLogger from './components/SmartDayLogger';
-import BodyComposition from './components/BodyComposition';
 import WorkoutHeatmap from './components/WorkoutHeatmap';
 import ProgressPhotos from './components/ProgressPhotos';
 import Footer from './components/Footer';
 import ProfileModal from './components/ProfileModal';
 import LoginPage from './components/LoginPage';
-import MotivationalQuote from './components/MotivationalQuote';
 import AICoach from './components/AICoach';
 import SleepCard from './components/SleepCard';
-import { Loader2, Zap } from 'lucide-react';
+import DailyFocus from './components/DailyFocus';
+import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon } from 'lucide-react';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
+const TABS = [
+  { id: 'today', label: 'Today', icon: Home },
+  { id: 'trends', label: 'Trends', icon: TrendingUp },
+  { id: 'ai', label: 'AI', icon: Sparkles },
+  { id: 'history', label: 'History', icon: ImageIcon },
+];
+
+function TabBar({ active, onChange }) {
+  return (
+    <nav className="sticky top-0 z-30 px-4 md:px-6 pt-3 pb-2" data-testid="tab-bar" style={{ background: 'linear-gradient(180deg, rgba(255,251,245,0.95) 0%, rgba(255,251,245,0.85) 100%)', backdropFilter: 'blur(12px)' }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: 'rgba(199,82,42,0.06)', border: '1px solid rgba(199,82,42,0.1)' }}>
+          {TABS.map(t => {
+            const Icon = t.icon;
+            const isActive = active === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => onChange(t.id)}
+                className="flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
+                style={{
+                  background: isActive ? '#C7522A' : 'transparent',
+                  color: isActive ? '#fff' : 'rgba(61,31,10,0.65)',
+                  boxShadow: isActive ? '0 2px 12px rgba(199,82,42,0.3)' : 'none'
+                }}
+                data-testid={`tab-${t.id}`}
+              >
+                <Icon size={14} strokeWidth={2.2} />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 function Dashboard() {
-  const { loading } = useFit();
+  const { loading, stats, workouts, addWorkout } = useFit();
   const [profileOpen, setProfileOpen] = useState(false);
   const [smartLogOpen, setSmartLogOpen] = useState(false);
+  const [tab, setTab] = useState('today');
+
+  // Auto-log rest day: if past 10pm and no workout today, log a Rest day once
+  useEffect(() => {
+    if (!stats || !workouts) return;
+    const now = new Date();
+    if (now.getHours() < 22) return;
+    const today = now.toISOString().split('T')[0];
+    const hasToday = workouts.some(w => w.date === today);
+    if (hasToday) return;
+    const lastAutoRest = localStorage.getItem('lastAutoRestDate');
+    if (lastAutoRest === today) return;
+    // Fire and forget
+    addWorkout({ type: 'Rest Day', duration: 0, calories: 0, notes: 'Auto-logged (no workout today)' })
+      .then(() => localStorage.setItem('lastAutoRestDate', today))
+      .catch(() => {});
+    // eslint-disable-next-line
+  }, [stats, workouts]);
 
   if (loading) {
     return (
@@ -45,35 +100,49 @@ function Dashboard() {
       <div className="app-content pb-20">
         <Header onOpenProfile={() => setProfileOpen(true)} />
 
-        {/* Quick Log Banner */}
-        <div className="px-4 md:px-6 pt-4" data-testid="quick-log-banner">
-          <div className="max-w-5xl mx-auto">
-            <button
-              onClick={() => setSmartLogOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{
-                background: 'linear-gradient(135deg, #C7522A 0%, #A0421F 100%)',
-                color: '#fff',
-                boxShadow: '0 4px 20px rgba(199,82,42,0.3)'
-              }}
-              data-testid="smart-log-btn"
-            >
-              <Zap size={16} strokeWidth={2.5} />
-              Quick Log Day
-            </button>
-          </div>
-        </div>
+        <TabBar active={tab} onChange={setTab} />
 
-        <DateNav />
-        <HeroSummary onOpenProfile={() => setProfileOpen(true)} />
-        <WeightChart />
-        <DataCards />
-        <SleepCard />
-        <AICoach />
-        <BodyComposition />
-        <WorkoutHeatmap />
-        <ProgressPhotos />
-        <MotivationalQuote />
+        {tab === 'today' && (
+          <>
+            <DailyFocus />
+            <div className="px-4 md:px-6 pt-4" data-testid="quick-log-banner">
+              <div className="max-w-5xl mx-auto">
+                <button
+                  onClick={() => setSmartLogOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{
+                    background: 'linear-gradient(135deg, #C7522A 0%, #A0421F 100%)',
+                    color: '#fff',
+                    boxShadow: '0 4px 20px rgba(199,82,42,0.3)'
+                  }}
+                  data-testid="smart-log-btn"
+                >
+                  <Zap size={16} strokeWidth={2.5} />
+                  Quick Log Day
+                </button>
+              </div>
+            </div>
+            <DateNav />
+            <HeroSummary onOpenProfile={() => setProfileOpen(true)} />
+          </>
+        )}
+
+        {tab === 'trends' && (
+          <>
+            <WeightChart />
+            <SleepCard />
+            <DataCards />
+            <WorkoutHeatmap />
+          </>
+        )}
+
+        {tab === 'ai' && (
+          <AICoach />
+        )}
+
+        {tab === 'history' && (
+          <ProgressPhotos />
+        )}
       </div>
       <Footer />
       <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} />
