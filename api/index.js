@@ -983,4 +983,111 @@ app.get('/api/health-sync/info', requireAuth, (req, res) => {
   });
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// SUNDAY WEEKLY COACH CRON (Vercel Cron - Sun 14:30 UTC = 8 PM IST)
+// ═══════════════════════════════════════════════════════════════════════════
+app.get('/api/cron/weekly-coach', async (req, res) => {
+  try {
+    // Vercel injects Authorization: Bearer <CRON_SECRET>. Enforce only if secret is configured.
+    const cronSecret = process.env.CRON_SECRET;
+    if (cronSecret) {
+      const auth = req.headers.authorization || '';
+      if (auth !== `Bearer ${cronSecret}`) return res.status(401).json({ detail: 'Unauthorized' });
+    }
+
+    const db = await getDb();
+    const users = await db.collection('users').find({}, { projection: { _id: 0, password: 0 } }).toArray();
+    const gemini = getGemini();
+    const model = gemini.getGenerativeModel({ model: GEMINI_MODEL });
+    const keys = await getVapidKeys(db);
+    webpush.setVapidDetails('mailto:admin@fitforge.app', keys.publicKey, keys.privateKey);
+
+    const results = [];
+    for (const u of users) {
+      try {
+        const data = await gatherUserData(db, u.id, 7);
+        const prompt = `You are an expert fitness coach analyzing a user's past 7 days. Be direct, warm, specific and concise.
+
+USER PROFILE:
+- Current weight: ${data.profile?.weight}kg, Goal: ${data.profile?.goalKg}kg
+- Height: ${data.profile?.heightCm}cm, Age: ${data.profile?.age}, Gender: ${data.profile?.gender}
+- Daily calorie target: ${data.profile?.calTarget}
+
+WEIGHT LOGS (${data.weights.length}): ${JSON.stringify(data.weights)}
+WORKOUTS (${data.workouts.length}): ${JSON.stringify(data.workouts.map(w => ({ date: w.date, type: w.type, duration: w.duration, calories: w.calories })))}
+NUTRITION (${data.nutrition.length}): ${JSON.stringify(data.nutrition.map(n => ({ date: n.date, calories: n.total?.calories, protein: n.total?.protein })))}
+STEPS: ${JSON.stringify(data.steps)}
+
+Respond with STRICT JSON only (no markdown, no code fences):
+{
+  "headline": "One punchy line summarising the week (max 12 words)",
+  "wins": ["specific win 1", "specific win 2"],
+  "gaps": ["specific gap 1", "specific gap 2"],
+  "action_this_week": ["concrete action 1", "concrete action 2", "concrete action 3"],
+  "tone": "one of: crushing | steady | slipping | just_started"
+}`;
+
+        const result = await model.generateContent(prompt);
+        const text = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
+        let parsed;
+        try { parsed = JSON.parse(text); } catch { parsed = { headline: text, wins: [], gaps: [], action_this_week: [], tone: 'steady' }; }
+
+        await db.collection('ai_reports').insertOne({
+          id: uuidv4(),
+          user_id: u.id,
+          type: 'weekly_coach',
+          data: parsed,
+          generated_at: new Date().toISOString(),
+          source: 'cron'
+        });
+
+        // Send push notification
+        const sub = await db.collection('push_subs').findOne({ user_id: u.id }, { projection: { _id: 0 } });
+        if (sub) {
+          const emoji = { crushing: '🔥', steady: '💪', slipping: '⚠️', just_started: '🌱' }[parsed.tone] || '💪';
+          const payload = JSON.stringify({
+            title: `${emoji} Weekly Coach Report`,
+            body: parsed.headline || 'Your weekly summary is ready',
+            icon: '/favicon.ico',
+            data: { url: '/', type: 'weekly_coach' }
+          });
+          try {
+            await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+            results.push({ user_id: u.id, status: 'sent' });
+          } catch (pushErr) {
+            results.push({ user_id: u.id, status: 'push_failed', error: pushErr.message });
+          }
+        } else {
+          results.push({ user_id: u.id, status: 'no_subscription' });
+        }
+      } catch (userErr) {
+        results.push({ user_id: u.id, status: 'error', error: userErr.message });
+      }
+    }
+
+    res.json({ message: 'Weekly coach cron complete', processed: users.length, results });
+  } catch (e) {
+    console.error('Weekly coach cron error:', e);
+    res.status(500).json({ detail: e.message });
+  }
+});
+
+// Push subscription status helper - lets frontend know if user is already subscribed
+app.get('/api/push/status', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    const sub = await db.collection('push_subs').findOne({ user_id: req.userId }, { projection: { _id: 0, endpoint: 1 } });
+    res.json({ subscribed: !!sub });
+  } catch (e) { res.status(500).json({ detail: e.message }); }
+});
+
+// Unsubscribe from push
+app.delete('/api/push/subscribe', requireAuth, async (req, res) => {
+  try {
+    const db = await getDb();
+    await db.collection('push_subs').deleteOne({ user_id: req.userId });
+    res.json({ message: 'Unsubscribed' });
+  } catch (e) { res.status(500).json({ detail: e.message }); }
+});
+
 module.exports = app;

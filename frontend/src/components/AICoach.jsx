@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Loader2, TrendingDown, ImageIcon, X, Smartphone, Copy, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Loader2, TrendingDown, ImageIcon, X, Smartphone, Copy, CheckCircle2, Bell, BellOff } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : '/api';
+
+// Convert VAPID public key from base64 to Uint8Array
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
 
 export default function AICoach() {
   const { token } = useAuth();
@@ -19,6 +29,8 @@ export default function AICoach() {
   const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [syncInfo, setSyncInfo] = useState(null);
   const [copied, setCopied] = useState('');
+  const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
 
   const authAxios = axios.create({ headers: token ? { Authorization: `Bearer ${token}` } : {} });
 
@@ -28,8 +40,49 @@ export default function AICoach() {
     authAxios.get(`${API}/ai/latest/plateau_detect`).then(r => r.data && setPlateauData(r.data.data)).catch(() => {});
     authAxios.get(`${API}/progress-photos`).then(r => setPhotos(r.data || [])).catch(() => {});
     authAxios.get(`${API}/health-sync/info`).then(r => setSyncInfo(r.data)).catch(() => {});
+    authAxios.get(`${API}/push/status`).then(r => setPushSubscribed(!!r.data?.subscribed)).catch(() => {});
     // eslint-disable-next-line
   }, [token]);
+
+  const enablePush = async () => {
+    setPushBusy(true);
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        alert('Push notifications not supported on this browser. Use Safari on iPhone (add to Home Screen first) or Chrome.');
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') { alert('Notification permission denied'); return; }
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+      const { data: vapid } = await authAxios.get(`${API}/push/vapid-key`);
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapid.publicKey),
+      });
+      const subJson = sub.toJSON();
+      await authAxios.post(`${API}/push/subscribe`, { endpoint: subJson.endpoint, keys: subJson.keys });
+      setPushSubscribed(true);
+    } catch (e) {
+      alert('Could not enable push: ' + (e?.message || 'unknown'));
+    } finally { setPushBusy(false); }
+  };
+
+  const disablePush = async () => {
+    setPushBusy(true);
+    try {
+      await authAxios.delete(`${API}/push/subscribe`);
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) await sub.unsubscribe();
+        }
+      }
+      setPushSubscribed(false);
+    } catch (e) { alert('Could not disable: ' + e.message); }
+    finally { setPushBusy(false); }
+  };
 
   const runWeeklyCoach = async () => {
     setLoadingCoach(true);
@@ -153,6 +206,28 @@ export default function AICoach() {
               >
                 {loadingCoach ? <><Loader2 size={14} className="animate-spin" /> Analyzing...</> : coachData ? 'Regenerate Report' : 'Generate Weekly Report'}
               </button>
+
+              {/* Sunday Push Toggle */}
+              <div className="mt-3 p-3 rounded-xl flex items-center gap-3" style={{ background: pushSubscribed ? 'rgba(15,118,110,0.08)' : 'rgba(199,82,42,0.06)', border: `1px solid ${pushSubscribed ? 'rgba(15,118,110,0.2)' : 'rgba(199,82,42,0.15)'}` }} data-testid="sunday-push-toggle">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: pushSubscribed ? 'rgba(15,118,110,0.15)' : 'rgba(199,82,42,0.12)' }}>
+                  {pushSubscribed ? <Bell size={15} style={{ color: '#0F766E' }} strokeWidth={2.4} /> : <BellOff size={15} style={{ color: '#C7522A' }} strokeWidth={2.4} />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold" style={{ color: '#3D1F0A' }}>Sunday 8 PM auto-report</p>
+                  <p className="text-[11px]" style={{ color: 'rgba(61,31,10,0.6)' }}>
+                    {pushSubscribed ? 'Push enabled — you\'ll get a summary every Sunday' : 'Turn on to receive the weekly coach as a push notification'}
+                  </p>
+                </div>
+                <button
+                  onClick={pushSubscribed ? disablePush : enablePush}
+                  disabled={pushBusy}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all disabled:opacity-50"
+                  style={{ background: pushSubscribed ? 'rgba(15,118,110,0.15)' : '#C7522A', color: pushSubscribed ? '#0F766E' : '#fff' }}
+                  data-testid="push-toggle-btn"
+                >
+                  {pushBusy ? <Loader2 size={12} className="animate-spin" /> : pushSubscribed ? 'Disable' : 'Enable'}
+                </button>
+              </div>
             </div>
           )}
 

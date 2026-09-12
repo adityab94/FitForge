@@ -30,6 +30,7 @@ Personal PWA fitness tracker (single user, PIN 858608). Cloned from https://gith
 - [x] Animated StreakFlame widget with 6 tiers (cold → legendary)
 - [x] BarcodeScanner: camera + Open Food Facts lookup + one-tap log
 - [x] VoiceLog: Web Speech API + Gemini parses "logged 30 min bench + 400 cal chicken bowl" into multi-action logs
+- [x] Sunday 8 PM Coach Push: Vercel cron (30 14 * * 0 UTC = 8PM IST) auto-generates Weekly Coach + pushes via web-push with tone emoji + one-line headline
 - [x] AskCoach: mic + Gemini + browser TTS - ask "how am I doing this week" and hear a spoken answer, embedded on AI tab (full) and Trends tab (compact)
 - [x] Removed bloat: MotivationalQuote, BodyComposition
 
