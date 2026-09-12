@@ -305,3 +305,25 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom-color: inherit;
   }
 }
+
+/* Streak flame animations */
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); opacity: 1; }
+  25% { transform: scale(1.05) rotate(1deg); opacity: 0.95; }
+  50% { transform: scale(0.98) rotate(-1.5deg); opacity: 1; }
+  75% { transform: scale(1.03) rotate(0.5deg); opacity: 0.9; }
+}
+.flame-flicker { animation: flameFlicker 1.6s ease-in-out infinite; transform-origin: center bottom; }
+
+@keyframes flameParticle {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate(var(--x, 3px), -14px) scale(0.7); opacity: 0.4; }
+  100% { transform: translate(var(--x, -2px), -24px) scale(0.2); opacity: 0; }
+}
+.flame-particle { animation: flameParticle 2s ease-out infinite; }
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+.anim-pulse { animation: pulseGlow 2s ease-in-out infinite; }

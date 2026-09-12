@@ -17,7 +17,10 @@ import LoginPage from './components/LoginPage';
 import AICoach from './components/AICoach';
 import SleepCard from './components/SleepCard';
 import DailyFocus from './components/DailyFocus';
-import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon } from 'lucide-react';
+import StreakFlame from './components/StreakFlame';
+import SleepWeightChart from './components/SleepWeightChart';
+import BarcodeScanner from './components/BarcodeScanner';
+import { Loader2, Zap, Home, TrendingUp, Sparkles, Image as ImageIcon, ScanBarcode } from 'lucide-react';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -64,6 +67,7 @@ function Dashboard() {
   const { loading, stats, workouts, addWorkout } = useFit();
   const [profileOpen, setProfileOpen] = useState(false);
   const [smartLogOpen, setSmartLogOpen] = useState(false);
+  const [barcodeOpen, setBarcodeOpen] = useState(false);
   const [tab, setTab] = useState('today');
 
   // Auto-log rest day: if past 10pm and no workout today, log a Rest day once
@@ -105,11 +109,16 @@ function Dashboard() {
         {tab === 'today' && (
           <>
             <DailyFocus />
-            <div className="px-4 md:px-6 pt-4" data-testid="quick-log-banner">
+            <div className="px-4 md:px-6 pt-4" data-testid="streak-flame-wrap">
               <div className="max-w-5xl mx-auto">
+                <StreakFlame />
+              </div>
+            </div>
+            <div className="px-4 md:px-6 pt-4" data-testid="quick-log-banner">
+              <div className="max-w-5xl mx-auto flex gap-2">
                 <button
                   onClick={() => setSmartLogOpen(true)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
                   style={{
                     background: 'linear-gradient(135deg, #C7522A 0%, #A0421F 100%)',
                     color: '#fff',
@@ -119,6 +128,20 @@ function Dashboard() {
                 >
                   <Zap size={16} strokeWidth={2.5} />
                   Quick Log Day
+                </button>
+                <button
+                  onClick={() => setBarcodeOpen(true)}
+                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{
+                    background: 'rgba(255,255,255,0.7)',
+                    color: '#C7522A',
+                    border: '1.5px solid rgba(199,82,42,0.25)'
+                  }}
+                  data-testid="scan-btn"
+                  title="Scan food barcode"
+                >
+                  <ScanBarcode size={16} strokeWidth={2.5} />
+                  Scan
                 </button>
               </div>
             </div>
@@ -130,6 +153,7 @@ function Dashboard() {
         {tab === 'trends' && (
           <>
             <WeightChart />
+            <SleepWeightChart />
             <SleepCard />
             <DataCards />
             <WorkoutHeatmap />
@@ -147,6 +171,7 @@ function Dashboard() {
       <Footer />
       <ProfileModal open={profileOpen} onOpenChange={setProfileOpen} />
       <SmartDayLogger open={smartLogOpen} onClose={() => setSmartLogOpen(false)} />
+      <BarcodeScanner open={barcodeOpen} onClose={() => setBarcodeOpen(false)} />
     </div>
   );
 }
