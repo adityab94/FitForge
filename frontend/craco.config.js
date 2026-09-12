@@ -65,6 +65,15 @@ const webpackConfig = {
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
       }
+
+      // Some packages (e.g. html5-qrcode) ship compiled JS with sourceMappingURL
+      // comments pointing at .ts sources that aren't included in the npm package,
+      // which floods the build log with "Failed to parse source map" warnings.
+      webpackConfig.ignoreWarnings = [
+        ...(webpackConfig.ignoreWarnings || []),
+        /Failed to parse source map/,
+      ];
+
       return webpackConfig;
     },
   },
