@@ -9,10 +9,10 @@ function InfoTip({ text }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <button className="ml-1 p-0.5 rounded-full hover:bg-white/10 transition-colors" data-testid="info-tip">
-            <Info size={11} style={{ color: 'rgba(228,238,240,0.3)' }} />
+            <Info size={11} style={{ color: 'rgba(61,31,10,0.45)' }} />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[200px] text-[11px] leading-relaxed" style={{ background: '#1C2D35', color: '#E4EEF0', border: '1px solid rgba(228,238,240,0.1)' }}>
+        <TooltipContent side="top" className="max-w-[200px] text-[11px] leading-relaxed" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(255,91,4,0.15)' }}>
           {text}
         </TooltipContent>
       </Tooltip>
@@ -54,12 +54,12 @@ function AnimatedNumber({ value, suffix = '', decimals = 0 }) {
 
 function BMIGauge({ bmi, color }) {
   const colorMap = {
-    blue: '#E4EEF0',
+    blue: '#3D1F0A',
     green: '#075056',
     orange: '#FF5B04',
     red: '#EF4444'
   };
-  const gaugeColor = colorMap[color] || '#E4EEF0';
+  const gaugeColor = colorMap[color] || '#3D1F0A';
   const percentage = Math.min((bmi / 40) * 100, 100);
   const circumference = 2 * Math.PI * 38;
   const dashOffset = circumference - (percentage / 100) * circumference * 0.75;
@@ -67,7 +67,7 @@ function BMIGauge({ bmi, color }) {
   return (
     <div className="relative w-20 h-20 mx-auto mb-2">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-[135deg]">
-        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(228,238,240,0.06)" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} />
+        <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,91,4,0.1)" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} />
         <circle cx="50" cy="50" r="38" fill="none" stroke={gaugeColor} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 6px ${gaugeColor}50)` }} />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -85,12 +85,12 @@ function HealthScoreRing({ score }) {
   return (
     <div className="relative w-[76px] h-[76px]">
       <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
-        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(228,238,240,0.06)" strokeWidth="5" />
+        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,91,4,0.1)" strokeWidth="5" />
         <circle cx="40" cy="40" r="32" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 6px ${color}50)` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="stat-number text-lg" style={{ color }}>{score}</span>
-        <span className="text-[8px]" style={{ color: 'rgba(228,238,240,0.3)' }}>/ 100</span>
+        <span className="text-[8px]" style={{ color: 'rgba(61,31,10,0.45)' }}>/ 100</span>
       </div>
     </div>
   );
@@ -100,14 +100,14 @@ function WaterTracker({ glasses, onUpdate }) {
   const goal = 8;
   return (
     <div className="flex items-center gap-2">
-      <button onClick={() => onUpdate(Math.max(glasses - 1, 0))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#E4EEF0' }} data-testid="water-minus">-</button>
+      <button onClick={() => onUpdate(Math.max(glasses - 1, 0))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#3D1F0A' }} data-testid="water-minus">-</button>
       <div className="flex gap-0.5">
         {Array.from({ length: goal }).map((_, i) => (
-          <Droplets key={i} size={14} style={{ color: i < glasses ? '#075056' : 'rgba(228,238,240,0.1)', transition: 'color 0.2s' }} />
+          <Droplets key={i} size={14} style={{ color: i < glasses ? '#075056' : 'rgba(255,91,4,0.15)', transition: 'color 0.2s' }} />
         ))}
       </div>
-      <button onClick={() => onUpdate(Math.min(glasses + 1, 12))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#E4EEF0' }} data-testid="water-plus">+</button>
-      <span className="text-xs ml-1" style={{ color: 'rgba(228,238,240,0.4)' }}>{glasses}/{goal}</span>
+      <button onClick={() => onUpdate(Math.min(glasses + 1, 12))} className="btn-glow w-7 h-7 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 text-sm font-bold" style={{ color: '#3D1F0A' }} data-testid="water-plus">+</button>
+      <span className="text-xs ml-1" style={{ color: 'rgba(61,31,10,0.55)' }}>{glasses}/{goal}</span>
     </div>
   );
 }
@@ -148,7 +148,7 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="glass-card p-4 md:p-5 anim-scale-in col-span-2 md:col-span-1 flex flex-col items-center justify-center" style={{ borderTop: '2px solid rgba(7,80,86,0.4)' }} data-testid="kpi-health-score">
             <div className="flex items-center gap-1 mb-2">
               <Heart size={12} style={{ color: '#075056' }} strokeWidth={2} />
-              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(228,238,240,0.4)' }}>Score</span>
+              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>Score</span>
               <InfoTip text="Composite health score based on BMI, activity, nutrition tracking, and logging streak." />
             </div>
             <HealthScoreRing score={stats.health_score || 0} />
@@ -158,11 +158,11 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="glass-card p-4 md:p-5 kpi-bmi anim-scale-in delay-100" data-testid="kpi-bmi">
             <div className="flex items-center gap-1 mb-3">
               <Activity size={14} style={{ color: '#FF5B04' }} strokeWidth={2} />
-              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(228,238,240,0.4)' }}>BMI</span>
+              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>BMI</span>
               <InfoTip text="Body Mass Index = weight(kg) / height(m)2. Under 18.5 underweight, 18.5-24.9 normal, 25-29.9 overweight, 30+ obese." />
             </div>
             <BMIGauge bmi={stats.bmi} color={stats.bmi_color} />
-            <p className="text-center text-xs mt-1" style={{ color: { blue: '#E4EEF0', green: '#075056', orange: '#FF5B04', red: '#EF4444' }[stats.bmi_color] }}>
+            <p className="text-center text-xs mt-1" style={{ color: { blue: '#3D1F0A', green: '#075056', orange: '#FF5B04', red: '#EF4444' }[stats.bmi_color] }}>
               {stats.bmi_category}
             </p>
           </div>
@@ -171,13 +171,13 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="glass-card p-4 md:p-5 kpi-bmr anim-scale-in delay-200" data-testid="kpi-bmr">
             <div className="flex items-center gap-1 mb-3">
               <Zap size={14} style={{ color: '#075056' }} strokeWidth={2} />
-              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(228,238,240,0.4)' }}>BMR</span>
+              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>BMR</span>
               <InfoTip text="Basal Metabolic Rate - calories your body burns at complete rest. Calculated via Mifflin-St Jeor equation." />
             </div>
             <div className="text-3xl md:text-4xl glow-orange mt-2">
               <AnimatedNumber value={stats.bmr} />
             </div>
-            <p className="text-xs mt-2" style={{ color: 'rgba(228,238,240,0.4)' }}>cal/day at rest</p>
+            <p className="text-xs mt-2" style={{ color: 'rgba(61,31,10,0.55)' }}>cal/day at rest</p>
             <p className="text-[10px] mt-1" style={{ color: 'rgba(228,238,240,0.25)' }}>TDEE: {stats.tdee} cal</p>
           </div>
 
@@ -185,13 +185,13 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="glass-card p-4 md:p-5 kpi-deficit anim-scale-in delay-300" data-testid="kpi-deficit">
             <div className="flex items-center gap-1 mb-3">
               <Target size={14} style={{ color: '#FF5B04' }} strokeWidth={2} />
-              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(228,238,240,0.4)' }}>Deficit</span>
+              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>Deficit</span>
               <InfoTip text="Daily caloric deficit = (TDEE + exercise) - food eaten. Positive = burning more than eating (weight loss)." />
             </div>
             <div className={`text-3xl md:text-4xl mt-2 ${deficitPositive ? 'glow-green' : ''}`} style={{ color: deficitPositive ? '#075056' : '#EF4444' }}>
               {deficitPositive ? '+' : ''}<AnimatedNumber value={Math.abs(stats.deficit)} />
             </div>
-            <p className="text-xs mt-2" style={{ color: 'rgba(228,238,240,0.4)' }}>cal {deficitPositive ? 'deficit' : 'surplus'}</p>
+            <p className="text-xs mt-2" style={{ color: 'rgba(61,31,10,0.55)' }}>cal {deficitPositive ? 'deficit' : 'surplus'}</p>
             {/* Rate matching badge */}
             {(() => {
               const d = stats.deficit;
@@ -217,17 +217,17 @@ export default function HeroSummary({ onOpenProfile }) {
           <div className="glass-card p-4 md:p-5 kpi-streak anim-scale-in delay-400" data-testid="kpi-streak">
             <div className="flex items-center gap-1 mb-3">
               <Flame size={14} style={{ color: '#FF5B04' }} strokeWidth={2} />
-              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(228,238,240,0.4)' }}>Streak</span>
+              <span className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(61,31,10,0.55)' }}>Streak</span>
               <InfoTip text="Consecutive days you've logged your weight. Keep the chain going!" />
             </div>
             <div className="flex items-end gap-2 mt-2">
               <span className="text-3xl md:text-4xl stat-number glow-orange" style={{ color: '#FF5B04' }}>
                 <AnimatedNumber value={stats.streak} />
               </span>
-              <span className="text-sm pb-1" style={{ color: 'rgba(228,238,240,0.4)' }}>days</span>
+              <span className="text-sm pb-1" style={{ color: 'rgba(61,31,10,0.55)' }}>days</span>
               {stats.streak > 0 && <span className="anim-flame text-2xl ml-1" role="img" aria-label="fire">&#128293;</span>}
             </div>
-            <p className="text-xs mt-2" style={{ color: 'rgba(228,238,240,0.4)' }}>{stats.streak >= 7 ? 'on fire!' : 'keep logging!'}</p>
+            <p className="text-xs mt-2" style={{ color: 'rgba(61,31,10,0.55)' }}>{stats.streak >= 7 ? 'on fire!' : 'keep logging!'}</p>
           </div>
         </div>
 
@@ -249,7 +249,7 @@ export default function HeroSummary({ onOpenProfile }) {
               <p className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 <span style={{ color: '#FF5B04' }}>{stats.days_to_goal} days</span> to {stats.weight_to_lose}kg goal
               </p>
-              <p className="text-xs mt-0.5" style={{ color: 'rgba(228,238,240,0.4)' }}>
+              <p className="text-xs mt-0.5" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 {countdown} remaining &middot; ~{stats.weekly_loss}kg/week &middot; deficit: {stats.planned_daily_deficit}cal/day
               </p>
             </div>

@@ -70,9 +70,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#16232A' }} data-testid="login-page">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(160deg, #FFF3E0 0%, #FFE0BF 25%, #FFCAB1 55%, #FFB088 100%)' }} data-testid="login-page">
       <div className="w-full max-w-sm">
-        <div className="glass-card p-8 anim-slide-up" style={{ background: 'rgba(228,238,240,0.05)', borderColor: 'rgba(228,238,240,0.1)' }}>
+        <div className="glass-card p-8 anim-slide-up" style={{ background: 'rgba(255,255,255,0.55)', borderColor: 'rgba(255,91,4,0.15)' }}>
           <div className="text-center mb-8">
             <img
               src="https://customer-assets.emergentagent.com/job_fittrack-pro-64/artifacts/czi1f9en_Fit%20%281%29.png"
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <h1 className="text-4xl font-bold tracking-tight" style={{ fontFamily: 'Outfit, sans-serif', color: '#FF5B04' }} data-testid="login-logo">
               FitForge
             </h1>
-            <p className="text-xs mt-2" style={{ color: 'rgba(228,238,240,0.4)' }}>
+            <p className="text-xs mt-2" style={{ color: 'rgba(61,31,10,0.55)' }}>
               Enter your PIN to continue
             </p>
           </div>
@@ -107,9 +107,9 @@ export default function LoginPage() {
                     onKeyDown={e => handleKeyDown(idx, e)}
                     className="w-11 h-14 text-center text-2xl font-bold rounded-xl transition-all focus:outline-none"
                     style={{
-                      background: 'rgba(228,238,240,0.05)',
-                      border: `1.5px solid ${error ? '#ef4444' : digit ? '#FF5B04' : 'rgba(228,238,240,0.1)'}`,
-                      color: '#E4EEF0',
+                      background: 'rgba(255,255,255,0.55)',
+                      border: `1.5px solid ${error ? '#ef4444' : digit ? '#FF5B04' : 'rgba(255,91,4,0.15)'}`,
+                      color: '#3D1F0A',
                       fontFamily: 'Outfit, sans-serif'
                     }}
                     data-testid={`pin-input-${idx}`}
@@ -125,7 +125,7 @@ export default function LoginPage() {
             </>
           )}
 
-          <p className="text-xs text-center mt-6" style={{ color: 'rgba(228,238,240,0.2)' }}>
+          <p className="text-xs text-center mt-6" style={{ color: 'rgba(61,31,10,0.35)' }}>
             Track your fitness journey with precision
           </p>
         </div>

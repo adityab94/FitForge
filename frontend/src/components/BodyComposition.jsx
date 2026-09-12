@@ -51,17 +51,17 @@ export default function BodyComposition() {
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="body-comp-title">
                   Body Composition
                 </h2>
-                <p className="text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>Navy Method body fat estimator</p>
+                <p className="text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>Navy Method body fat estimator</p>
               </div>
             </div>
             <TooltipProvider delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="p-1 rounded-full hover:bg-white/10">
-                    <Info size={14} style={{ color: 'rgba(228,238,240,0.3)' }} />
+                    <Info size={14} style={{ color: 'rgba(61,31,10,0.45)' }} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-[220px] text-[11px]" style={{ background: '#1C2D35', color: '#E4EEF0', border: '1px solid rgba(228,238,240,0.1)' }}>
+                <TooltipContent side="left" className="max-w-[220px] text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(255,91,4,0.15)' }}>
                   U.S. Navy body fat formula. Requires waist and neck circumference measurements in cm.
                 </TooltipContent>
               </Tooltip>
@@ -72,16 +72,16 @@ export default function BodyComposition() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.4)' }}>Waist (cm) — at navel</label>
+                <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.55)' }}>Waist (cm) — at navel</label>
                 <input type="number" step="0.1" className="input-dark w-full" placeholder="e.g. 88" value={form.waist} onChange={(e) => setForm({...form, waist: e.target.value})} data-testid="body-comp-waist" />
               </div>
               <div>
-                <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.4)' }}>Neck (cm) — below larynx</label>
+                <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.55)' }}>Neck (cm) — below larynx</label>
                 <input type="number" step="0.1" className="input-dark w-full" placeholder="e.g. 38" value={form.neck} onChange={(e) => setForm({...form, neck: e.target.value})} data-testid="body-comp-neck" />
               </div>
               {isFemale && (
                 <div>
-                  <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.4)' }}>Hips (cm) — widest point</label>
+                  <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.55)' }}>Hips (cm) — widest point</label>
                   <input type="number" step="0.1" className="input-dark w-full" placeholder="e.g. 100" value={form.hip} onChange={(e) => setForm({...form, hip: e.target.value})} data-testid="body-comp-hip" />
                 </div>
               )}
@@ -95,14 +95,14 @@ export default function BodyComposition() {
               <div className="flex flex-col items-center justify-center">
                 <div className="relative w-[130px] h-[130px] mb-3">
                   <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(228,238,240,0.06)" strokeWidth="8" />
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,91,4,0.1)" strokeWidth="8" />
                     <circle cx="60" cy="60" r="50" fill="none" stroke={catColor} strokeWidth="8" strokeLinecap="round"
                       strokeDasharray={circumference} strokeDashoffset={dashOffset}
                       style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 8px ${catColor}40)` }} />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="stat-number text-2xl" style={{ color: catColor }}>{result.body_fat}%</span>
-                    <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>body fat</span>
+                    <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>body fat</span>
                   </div>
                 </div>
                 <span className="text-sm font-semibold px-3 py-1 rounded-full" style={{ background: `${catColor}15`, color: catColor, border: `1px solid ${catColor}30` }}>
@@ -110,7 +110,7 @@ export default function BodyComposition() {
                 </span>
                 <div className="flex gap-6 mt-4 text-center">
                   <div>
-                    <p className="stat-number text-lg" style={{ color: '#E4EEF0' }}>{result.lean_mass}kg</p>
+                    <p className="stat-number text-lg" style={{ color: '#3D1F0A' }}>{result.lean_mass}kg</p>
                     <p className="text-[10px]" style={{ color: 'rgba(228,238,240,0.35)' }}>lean mass</p>
                   </div>
                   <div>
@@ -120,7 +120,7 @@ export default function BodyComposition() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center" style={{ color: 'rgba(228,238,240,0.2)' }}>
+              <div className="flex items-center justify-center" style={{ color: 'rgba(61,31,10,0.35)' }}>
                 <p className="text-sm text-center">Enter your measurements<br/>to estimate body fat %</p>
               </div>
             )}

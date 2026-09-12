@@ -35,7 +35,7 @@ export default function MotivationalQuote() {
         <div className="glass-card-static p-4 md:p-5 flex items-start gap-3" style={{ borderLeft: '2px solid rgba(255,91,4,0.3)' }}>
           <Quote size={18} style={{ color: '#FF5B04', flexShrink: 0, marginTop: 2 }} />
           <div>
-            <p className="text-sm md:text-base italic leading-relaxed" style={{ color: '#E4EEF0' }}>
+            <p className="text-sm md:text-base italic leading-relaxed" style={{ color: '#3D1F0A' }}>
               "{quote.text}"
             </p>
             <p className="text-xs mt-2" style={{ color: 'rgba(228,238,240,0.35)' }}>

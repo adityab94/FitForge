@@ -31,7 +31,7 @@ function Dashboard() {
       <div className="app-bg flex items-center justify-center min-h-screen" data-testid="loading-screen">
         <div className="flex flex-col items-center gap-4 anim-fade-in">
           <Loader2 size={32} className="animate-spin" style={{ color: '#FF5B04' }} />
-          <p className="text-sm" style={{ color: 'rgba(228,238,240,0.5)' }}>Loading your dashboard...</p>
+          <p className="text-sm" style={{ color: 'rgba(61,31,10,0.6)' }}>Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -83,7 +83,7 @@ function AuthGate() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#16232A' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #FFF3E0 0%, #FFCAB1 55%, #FFB088 100%)' }}>
         <Loader2 size={32} className="animate-spin" style={{ color: '#FF5B04' }} />
       </div>
     );

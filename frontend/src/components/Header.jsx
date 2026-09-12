@@ -61,7 +61,7 @@ export default function Header({ onOpenProfile }) {
             <LogOut size={18} className="text-slate-400" strokeWidth={1.5} />
           </button>
           <div className="avatar-upload" onClick={handleAvatarClick} data-testid="avatar-upload">
-            <img src={avatarSrc} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: 'rgba(228,238,240,0.1)' }} data-testid="avatar-image" />
+            <img src={avatarSrc} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: 'rgba(255,91,4,0.15)' }} data-testid="avatar-image" />
             <div className="avatar-overlay">
               <Camera size={16} className="text-white" />
             </div>

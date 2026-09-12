@@ -31,7 +31,7 @@ export default function WorkoutHeatmap() {
   };
 
   const intensityColors = {
-    0: 'rgba(228,238,240,0.04)',
+    0: 'rgba(255,255,255,0.5)',
     1: 'rgba(255,91,4,0.25)',
     2: 'rgba(255,91,4,0.5)',
     3: '#FF5B04',
@@ -55,11 +55,11 @@ export default function WorkoutHeatmap() {
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="heatmap-title">
                   Workout Activity
                 </h2>
-                <p className="text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>Last 12 weeks</p>
+                <p className="text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>Last 12 weeks</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>
-              <span><strong style={{ color: '#E4EEF0' }}>{totalWorkouts}</strong> workouts</span>
+            <div className="flex items-center gap-4 text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>
+              <span><strong style={{ color: '#3D1F0A' }}>{totalWorkouts}</strong> workouts</span>
               <span><strong style={{ color: '#FF5B04' }}>{totalCalories.toLocaleString()}</strong> cal</span>
               <span><strong style={{ color: '#075056' }}>{activeDays}</strong> active days</span>
             </div>
@@ -71,7 +71,7 @@ export default function WorkoutHeatmap() {
               {/* Day labels */}
               <div className="flex flex-col gap-1 pr-1">
                 {dayLabels.map((d, i) => (
-                  <div key={i} className="w-4 h-4 flex items-center justify-center text-[9px]" style={{ color: 'rgba(228,238,240,0.3)' }}>{d}</div>
+                  <div key={i} className="w-4 h-4 flex items-center justify-center text-[9px]" style={{ color: 'rgba(61,31,10,0.45)' }}>{d}</div>
                 ))}
               </div>
               {/* Weeks */}
@@ -87,12 +87,12 @@ export default function WorkoutHeatmap() {
                             data-testid={`heatmap-cell-${day.date}`}
                           />
                         </TooltipTrigger>
-                        <TooltipContent side="top" className="text-[11px]" style={{ background: '#1C2D35', color: '#E4EEF0', border: '1px solid rgba(228,238,240,0.1)' }}>
+                        <TooltipContent side="top" className="text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(255,91,4,0.15)' }}>
                           <p className="font-semibold">{day.date}</p>
                           {day.count > 0 ? (
                             <p>{day.count} workout{day.count > 1 ? 's' : ''} · {day.calories}cal · {day.duration}min</p>
                           ) : (
-                            <p style={{ color: 'rgba(228,238,240,0.4)' }}>Rest day</p>
+                            <p style={{ color: 'rgba(61,31,10,0.55)' }}>Rest day</p>
                           )}
                         </TooltipContent>
                       </Tooltip>
@@ -105,11 +105,11 @@ export default function WorkoutHeatmap() {
 
           {/* Legend */}
           <div className="flex items-center justify-end gap-2 mt-3">
-            <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.3)' }}>Less</span>
+            <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.45)' }}>Less</span>
             {[0, 1, 2, 3].map(i => (
               <div key={i} className="w-3 h-3 rounded-[2px]" style={{ background: intensityColors[i] }} />
             ))}
-            <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.3)' }}>More</span>
+            <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.45)' }}>More</span>
           </div>
         </div>
       </div>

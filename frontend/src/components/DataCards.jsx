@@ -29,7 +29,7 @@ function NutritionCard() {
   const macros = [
     { name: 'Carbs', value: carbsPct, color: '#FF5B04' },
     { name: 'Protein', value: proteinPct, color: '#075056' },
-    { name: 'Fat', value: fatPct, color: '#E4EEF0' },
+    { name: 'Fat', value: fatPct, color: '#3D1F0A' },
   ];
 
   const calcCalFromMacros = () => {
@@ -86,12 +86,12 @@ function NutritionCard() {
               <Plus size={14} className="text-[#FF5B04]" />
             </button>
           </DialogTrigger>
-          <DialogContent className="glass-card-static border-white/10 max-w-sm" style={{ background: '#16232A' }} data-testid="nutrition-modal">
+          <DialogContent className="glass-card-static border-white/10 max-w-sm" style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)' }} data-testid="nutrition-modal">
             <DialogHeader>
               <DialogTitle className="text-lg font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Log Nutrition
               </DialogTitle>
-              <DialogDescription className="text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>
+              <DialogDescription className="text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 {selectedDate === today ? 'Today' : selectedDate}
               </DialogDescription>
             </DialogHeader>
@@ -101,7 +101,7 @@ function NutritionCard() {
               onClick={handleCopyYesterday}
               disabled={copying}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium transition-all"
-              style={{ background: 'rgba(228,238,240,0.06)', color: 'rgba(228,238,240,0.6)', border: '1px solid rgba(228,238,240,0.1)' }}
+              style={{ background: 'rgba(255,91,4,0.1)', color: 'rgba(228,238,240,0.6)', border: '1px solid rgba(255,91,4,0.15)' }}
               data-testid="copy-yesterday-btn"
             >
               {copying ? <Loader2 size={13} className="animate-spin" /> : <Copy size={13} />}
@@ -111,9 +111,9 @@ function NutritionCard() {
             {error && <p className="text-xs text-center" style={{ color: '#EF4444' }}>{error}</p>}
 
             <div className="flex items-center gap-2 my-1">
-              <div className="flex-1 h-px" style={{ background: 'rgba(228,238,240,0.08)' }} />
-              <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.3)' }}>or enter manually</span>
-              <div className="flex-1 h-px" style={{ background: 'rgba(228,238,240,0.08)' }} />
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,91,4,0.12)' }} />
+              <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.45)' }}>or enter manually</span>
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,91,4,0.12)' }} />
             </div>
 
             {/* Mode toggle */}
@@ -121,7 +121,7 @@ function NutritionCard() {
               {['total', 'macros'].map(m => (
                 <button key={m} onClick={() => setMode(m)} data-testid={`nutrition-mode-${m}`}
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium transition-all"
-                  style={{ background: mode === m ? '#FF5B04' : 'rgba(228,238,240,0.06)', color: mode === m ? '#fff' : 'rgba(228,238,240,0.5)' }}>
+                  style={{ background: mode === m ? '#FF5B04' : 'rgba(255,91,4,0.1)', color: mode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                   {m === 'total' ? 'Quick (Calories)' : 'Breakdown (Macros)'}
                 </button>
               ))}
@@ -130,7 +130,7 @@ function NutritionCard() {
             <form onSubmit={handleSubmit} className="space-y-3">
               {mode === 'total' ? (
                 <div>
-                  <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Total Calories</label>
+                  <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Total Calories</label>
                   <input type="number" data-testid="nutrition-calories-input"
                     className="input-dark w-full text-sm" placeholder="e.g. 1800"
                     value={form.calories} onChange={e => setForm({ ...form, calories: e.target.value })} />
@@ -144,12 +144,12 @@ function NutritionCard() {
                   ].map(({ key, label, hint }) => (
                     <div key={key} className="flex items-center gap-2">
                       <div className="flex-1">
-                        <label className="text-xs mb-0.5 block" style={{ color: 'rgba(228,238,240,0.5)' }}>{label}</label>
+                        <label className="text-xs mb-0.5 block" style={{ color: 'rgba(61,31,10,0.6)' }}>{label}</label>
                         <input type="number" step="0.1" data-testid={`nutrition-${key}-input`}
                           className="input-dark w-full text-sm" placeholder="0"
                           value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} />
                       </div>
-                      <span className="text-[10px] mt-4" style={{ color: 'rgba(228,238,240,0.3)' }}>{hint}</span>
+                      <span className="text-[10px] mt-4" style={{ color: 'rgba(61,31,10,0.45)' }}>{hint}</span>
                     </div>
                   ))}
                   {(form.carbs || form.protein || form.fat) && (
@@ -178,8 +178,8 @@ function NutritionCard() {
           </PieChart>
         </ResponsiveContainer>
         <div className="donut-center">
-          <p className="text-lg font-bold stat-number" style={{ color: '#E4EEF0' }}>{hasNutrition ? totalCal : '—'}</p>
-          <p className="text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>{hasNutrition ? 'cal eaten' : 'no data'}</p>
+          <p className="text-lg font-bold stat-number" style={{ color: '#3D1F0A' }}>{hasNutrition ? totalCal : '—'}</p>
+          <p className="text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>{hasNutrition ? 'cal eaten' : 'no data'}</p>
         </div>
       </div>
 
@@ -187,16 +187,16 @@ function NutritionCard() {
         {macros.map((m) => (
           <div key={m.name} className="flex items-center gap-1.5 text-[10px]">
             <span className="w-2 h-2 rounded-full" style={{ background: m.color }} />
-            <span style={{ color: 'rgba(228,238,240,0.4)' }}>{m.name} {m.value}%</span>
+            <span style={{ color: 'rgba(61,31,10,0.55)' }}>{m.name} {m.value}%</span>
           </div>
         ))}
       </div>
 
       {hasNutrition && (
         <div className="mt-3 space-y-1">
-          {carbs > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(228,238,240,0.5)' }}><span>Carbs</span><span className="font-semibold" style={{ color: '#E4EEF0' }}>{carbs}g</span></div>}
-          {protein > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(228,238,240,0.5)' }}><span>Protein</span><span className="font-semibold" style={{ color: '#E4EEF0' }}>{protein}g</span></div>}
-          {fat > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(228,238,240,0.5)' }}><span>Fat</span><span className="font-semibold" style={{ color: '#E4EEF0' }}>{fat}g</span></div>}
+          {carbs > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(61,31,10,0.6)' }}><span>Carbs</span><span className="font-semibold" style={{ color: '#3D1F0A' }}>{carbs}g</span></div>}
+          {protein > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(61,31,10,0.6)' }}><span>Protein</span><span className="font-semibold" style={{ color: '#3D1F0A' }}>{protein}g</span></div>}
+          {fat > 0 && <div className="flex justify-between text-[10px]" style={{ color: 'rgba(61,31,10,0.6)' }}><span>Fat</span><span className="font-semibold" style={{ color: '#3D1F0A' }}>{fat}g</span></div>}
           {nutrition?.source && (
             <p className="text-[9px] text-center mt-1" style={{ color: 'rgba(228,238,240,0.25)' }}>
               {nutrition.source === 'copied_from_yesterday' ? 'copied from yesterday' : 'manually logged'}
@@ -253,7 +253,7 @@ function ActivityCard() {
       {showSteps ? (
         <form onSubmit={handleAddSteps} className="space-y-3">
           <div>
-            <label className="text-[10px] mb-1 block" style={{ color: 'rgba(228,238,240,0.4)' }}>
+            <label className="text-[10px] mb-1 block" style={{ color: 'rgba(61,31,10,0.55)' }}>
               Steps for {selectedDate === today ? 'today' : selectedDate}
             </label>
             <input
@@ -277,7 +277,7 @@ function ActivityCard() {
             Log Steps
           </button>
           {stepsToday > 0 && (
-            <p className="text-[10px] text-center" style={{ color: 'rgba(228,238,240,0.4)' }}>
+            <p className="text-[10px] text-center" style={{ color: 'rgba(61,31,10,0.55)' }}>
               Currently: {stepsToday.toLocaleString()} steps · {stepsCalories} cal
             </p>
           )}
@@ -286,7 +286,7 @@ function ActivityCard() {
         <>
           <div className="relative w-[120px] h-[120px] mx-auto">
             <svg viewBox="0 0 100 100" className="w-full h-full circular-progress">
-              <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(228,238,240,0.04)" strokeWidth="6" />
+              <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="6" />
               <circle cx="50" cy="50" r="44" fill="none" stroke="url(#activityGrad)" strokeWidth="6"
                 strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={dashOffset}
                 style={{ transition: 'stroke-dashoffset 1.5s ease-out' }} />
@@ -298,11 +298,11 @@ function ActivityCard() {
               </defs>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="stat-number text-2xl" style={{ color: '#E4EEF0' }}>{burned}</span>
-              <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>cal burned</span>
+              <span className="stat-number text-2xl" style={{ color: '#3D1F0A' }}>{burned}</span>
+              <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>cal burned</span>
             </div>
           </div>
-          <div className="flex justify-between mt-4 text-[10px] px-2" style={{ color: 'rgba(228,238,240,0.3)' }}>
+          <div className="flex justify-between mt-4 text-[10px] px-2" style={{ color: 'rgba(61,31,10,0.45)' }}>
             <span>0</span>
             <span style={{ color: '#FF5B04' }}>{Math.round(percentage)}%</span>
             <span>{goal} cal</span>
@@ -311,15 +311,15 @@ function ActivityCard() {
           {/* Breakdown */}
           <div className="mt-3 space-y-1">
             {burnedWorkouts > 0 && (
-              <div className="flex justify-between text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>
+              <div className="flex justify-between text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 <span>Workout</span>
-                <span style={{ color: '#E4EEF0' }}>{burnedWorkouts} cal</span>
+                <span style={{ color: '#3D1F0A' }}>{burnedWorkouts} cal</span>
               </div>
             )}
             {stepsToday > 0 && (
-              <div className="flex justify-between text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>
+              <div className="flex justify-between text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 <span>{stepsToday.toLocaleString()} steps</span>
-                <span style={{ color: '#E4EEF0' }}>{stepsCalories} cal</span>
+                <span style={{ color: '#3D1F0A' }}>{stepsCalories} cal</span>
               </div>
             )}
           </div>
@@ -327,8 +327,8 @@ function ActivityCard() {
           {stepsToday > 0 && (
             <div className="mt-2 flex items-center justify-center gap-1.5">
               <Footprints size={12} style={{ color: '#075056' }} />
-              <span className="text-xs font-semibold" style={{ color: '#E4EEF0' }}>{stepsToday.toLocaleString()}</span>
-              <span className="text-[10px]" style={{ color: 'rgba(228,238,240,0.4)' }}>steps</span>
+              <span className="text-xs font-semibold" style={{ color: '#3D1F0A' }}>{stepsToday.toLocaleString()}</span>
+              <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.55)' }}>steps</span>
             </div>
           )}
         </>
@@ -372,7 +372,7 @@ function WorkoutsCard() {
               <Plus size={14} className="text-[#FF5B04]" />
             </button>
           </DialogTrigger>
-          <DialogContent className="glass-card-static border-white/10 max-w-md" style={{ background: '#16232A' }} data-testid="add-workout-modal">
+          <DialogContent className="glass-card-static border-white/10 max-w-md" style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)' }} data-testid="add-workout-modal">
             <DialogHeader>
               <DialogTitle className="text-lg font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>Log Workout</DialogTitle>
               <DialogDescription className="text-xs text-slate-500">Record your workout details</DialogDescription>

@@ -64,7 +64,7 @@ export default function ProgressPhotos() {
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="progress-photos-title">
                   Progress Photos
                 </h2>
-                <p className="text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>
+                <p className="text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>
                   {photos.length} photo{photos.length !== 1 ? 's' : ''} · Track your transformation
                 </p>
               </div>
@@ -83,11 +83,11 @@ export default function ProgressPhotos() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8" style={{ color: 'rgba(228,238,240,0.3)' }}>Loading photos...</div>
+            <div className="text-center py-8" style={{ color: 'rgba(61,31,10,0.45)' }}>Loading photos...</div>
           ) : photos.length === 0 ? (
             <div className="text-center py-12" data-testid="no-photos-message">
-              <Camera size={40} className="mx-auto mb-3" style={{ color: 'rgba(228,238,240,0.15)' }} />
-              <p className="text-sm" style={{ color: 'rgba(228,238,240,0.3)' }}>
+              <Camera size={40} className="mx-auto mb-3" style={{ color: 'rgba(61,31,10,0.28)' }} />
+              <p className="text-sm" style={{ color: 'rgba(61,31,10,0.45)' }}>
                 No progress photos yet. Upload your first to start tracking your transformation.
               </p>
             </div>
@@ -97,30 +97,30 @@ export default function ProgressPhotos() {
               {hasComparison && (
                 <div className="mb-4" data-testid="before-after-comparison">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold" style={{ color: 'rgba(228,238,240,0.5)' }}>Before &amp; After</span>
+                    <span className="text-xs font-semibold" style={{ color: 'rgba(61,31,10,0.6)' }}>Before &amp; After</span>
                     <div className="flex items-center gap-2">
                       <button onClick={() => setCompareIdx(prev => Math.max(prev - 1, 0))} disabled={compareIdx === 0}
                         className="p-1 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30" data-testid="compare-prev">
-                        <ChevronLeft size={14} style={{ color: '#E4EEF0' }} />
+                        <ChevronLeft size={14} style={{ color: '#3D1F0A' }} />
                       </button>
                       <button onClick={() => setCompareIdx(prev => Math.min(prev + 1, photos.length - 2))} disabled={compareIdx >= photos.length - 2}
                         className="p-1 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30" data-testid="compare-next">
-                        <ChevronRight size={14} style={{ color: '#E4EEF0' }} />
+                        <ChevronRight size={14} style={{ color: '#3D1F0A' }} />
                       </button>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(228,238,240,0.08)' }}>
+                    <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,91,4,0.12)' }}>
                       <img src={getPhotoUrl(firstPhoto)} alt="Before" className="w-full h-[200px] md:h-[280px] object-cover" data-testid="before-photo" />
-                      <div className="absolute bottom-0 left-0 right-0 p-2" style={{ background: 'linear-gradient(transparent, rgba(22,35,42,0.9))' }}>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(228,238,240,0.1)', color: '#E4EEF0' }}>
+                      <div className="absolute bottom-0 left-0 right-0 p-2" style={{ background: 'linear-gradient(transparent, rgba(255,248,240,0.9))' }}>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,91,4,0.15)', color: '#3D1F0A' }}>
                           Before · {firstPhoto.date}
                         </span>
                       </div>
                     </div>
                     <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,91,4,0.15)' }}>
                       <img src={getPhotoUrl(comparePhoto)} alt="After" className="w-full h-[200px] md:h-[280px] object-cover" data-testid="after-photo" />
-                      <div className="absolute bottom-0 left-0 right-0 p-2" style={{ background: 'linear-gradient(transparent, rgba(22,35,42,0.9))' }}>
+                      <div className="absolute bottom-0 left-0 right-0 p-2" style={{ background: 'linear-gradient(transparent, rgba(255,248,240,0.9))' }}>
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,91,4,0.15)', color: '#FF5B04' }}>
                           After · {comparePhoto.date}
                         </span>
@@ -133,7 +133,7 @@ export default function ProgressPhotos() {
               {/* Photo Grid */}
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                 {photos.map((photo) => (
-                  <div key={photo.id} className="relative group rounded-xl overflow-hidden aspect-square" style={{ border: '1px solid rgba(228,238,240,0.06)' }} data-testid={`progress-photo-${photo.id}`}>
+                  <div key={photo.id} className="relative group rounded-xl overflow-hidden aspect-square" style={{ border: '1px solid rgba(255,91,4,0.1)' }} data-testid={`progress-photo-${photo.id}`}>
                     <img src={getPhotoUrl(photo)} alt={`Progress ${photo.date}`} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button onClick={() => handleDelete(photo.id)} className="p-2 rounded-full bg-red-500/20 hover:bg-red-500/40 transition-colors" data-testid={`delete-photo-${photo.id}`}>

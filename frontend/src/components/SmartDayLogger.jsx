@@ -70,7 +70,7 @@ export default function SmartDayLogger({ open, onClose }) {
         setStep(s => s + 1);
       } else {
         setDone(true);
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#FF5B04', '#075056', '#E4EEF0'] });
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#FF5B04', '#075056', '#3D1F0A'] });
       }
     } catch (e) {
       console.error(e);
@@ -106,13 +106,13 @@ export default function SmartDayLogger({ open, onClose }) {
     >
       <div
         className="w-full max-w-sm rounded-2xl p-6 relative"
-        style={{ background: '#16232A', border: '1px solid rgba(228,238,240,0.1)' }}
+        style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)', border: '1px solid rgba(255,91,4,0.15)' }}
         data-testid="smart-logger-modal"
       >
         <button
           onClick={reset}
           className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
-          style={{ color: 'rgba(228,238,240,0.4)' }}
+          style={{ color: 'rgba(61,31,10,0.55)' }}
           data-testid="smart-logger-close"
         >
           <X size={16} />
@@ -124,7 +124,7 @@ export default function SmartDayLogger({ open, onClose }) {
             <h2 className="text-xl font-bold mb-2" style={{ fontFamily: 'Outfit, sans-serif', color: '#FF5B04' }}>
               Day logged!
             </h2>
-            <p className="text-sm mb-6" style={{ color: 'rgba(228,238,240,0.5)' }}>
+            <p className="text-sm mb-6" style={{ color: 'rgba(61,31,10,0.6)' }}>
               Great job tracking {dateLabel}. Your stats are updated.
             </p>
             <button
@@ -140,7 +140,7 @@ export default function SmartDayLogger({ open, onClose }) {
           <>
             {/* Header */}
             <div className="mb-5">
-              <p className="text-xs mb-1" style={{ color: 'rgba(228,238,240,0.4)', fontFamily: 'Outfit, sans-serif' }}>
+              <p className="text-xs mb-1" style={{ color: 'rgba(61,31,10,0.55)', fontFamily: 'Outfit, sans-serif' }}>
                 QUICK LOG — {dateLabel.toUpperCase()}
               </p>
               <h2 className="text-lg font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
@@ -159,7 +159,7 @@ export default function SmartDayLogger({ open, onClose }) {
                   <div
                     key={s.id}
                     className="flex-1 h-1 rounded-full transition-all"
-                    style={{ background: i <= step ? s.color : 'rgba(228,238,240,0.1)' }}
+                    style={{ background: i <= step ? s.color : 'rgba(255,91,4,0.15)' }}
                   />
                 );
               })}
@@ -175,14 +175,14 @@ export default function SmartDayLogger({ open, onClose }) {
                     {['total', 'macros'].map(m => (
                       <button key={m} onClick={() => setNutMode(m)} data-testid={`wizard-mode-${m}`}
                         className="flex-1 py-2 rounded-lg text-xs font-medium transition-all capitalize"
-                        style={{ background: nutMode === m ? '#FF5B04' : 'rgba(228,238,240,0.06)', color: nutMode === m ? '#fff' : 'rgba(228,238,240,0.5)' }}>
+                        style={{ background: nutMode === m ? '#FF5B04' : 'rgba(255,91,4,0.1)', color: nutMode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                         {m === 'total' ? 'Quick (calories)' : 'By macros'}
                       </button>
                     ))}
                   </div>
                   {nutMode === 'total' ? (
                     <div>
-                      <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Total Calories</label>
+                      <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Total Calories</label>
                       <input
                         type="number"
                         autoFocus
@@ -198,12 +198,12 @@ export default function SmartDayLogger({ open, onClose }) {
                       {[['carbs', carbs, setCarbs, '×4 cal/g'], ['protein', protein, setProtein, '×4 cal/g'], ['fat', fat, setFat, '×9 cal/g']].map(([key, val, setter, hint]) => (
                         <div key={key} className="flex items-center gap-2">
                           <div className="flex-1">
-                            <label className="text-xs mb-0.5 block capitalize" style={{ color: 'rgba(228,238,240,0.5)' }}>{key} (g)</label>
+                            <label className="text-xs mb-0.5 block capitalize" style={{ color: 'rgba(61,31,10,0.6)' }}>{key} (g)</label>
                             <input type="number" step="0.1" data-testid={`wizard-${key}-input`}
                               className="input-dark w-full text-sm" placeholder="0"
                               value={val} onChange={e => setter(e.target.value)} />
                           </div>
-                          <span className="text-[10px] mt-4" style={{ color: 'rgba(228,238,240,0.3)' }}>{hint}</span>
+                          <span className="text-[10px] mt-4" style={{ color: 'rgba(61,31,10,0.45)' }}>{hint}</span>
                         </div>
                       ))}
                       {(carbs || protein || fat) && (
@@ -217,7 +217,7 @@ export default function SmartDayLogger({ open, onClose }) {
               {/* Steps step */}
               {step === 1 && (
                 <div>
-                  <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Steps taken</label>
+                  <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Steps taken</label>
                   <input
                     type="number"
                     autoFocus
@@ -227,7 +227,7 @@ export default function SmartDayLogger({ open, onClose }) {
                     value={stepsVal}
                     onChange={e => setStepsVal(e.target.value)}
                   />
-                  <p className="text-[10px] mt-2" style={{ color: 'rgba(228,238,240,0.3)' }}>
+                  <p className="text-[10px] mt-2" style={{ color: 'rgba(61,31,10,0.45)' }}>
                     Calories auto-calculated from your height & MET walking formula
                   </p>
                 </div>
@@ -236,7 +236,7 @@ export default function SmartDayLogger({ open, onClose }) {
               {/* Water step */}
               {step === 2 && (
                 <div>
-                  <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Glasses of water (goal: 8)</label>
+                  <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Glasses of water (goal: 8)</label>
                   <input
                     type="number"
                     autoFocus
@@ -252,7 +252,7 @@ export default function SmartDayLogger({ open, onClose }) {
                       <button key={n} onClick={() => setWaterVal(String(n))}
                         data-testid={`wizard-water-${n}`}
                         className="px-3 py-1 rounded-lg text-xs transition-colors"
-                        style={{ background: waterVal === String(n) ? '#3B82F6' : 'rgba(228,238,240,0.06)', color: waterVal === String(n) ? '#fff' : 'rgba(228,238,240,0.5)' }}>
+                        style={{ background: waterVal === String(n) ? '#3B82F6' : 'rgba(255,91,4,0.1)', color: waterVal === String(n) ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                         {n}
                       </button>
                     ))}
@@ -264,7 +264,7 @@ export default function SmartDayLogger({ open, onClose }) {
               {step === 3 && (
                 <div className="space-y-2">
                   <div>
-                    <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Workout type</label>
+                    <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Workout type</label>
                     <input
                       autoFocus
                       data-testid="wizard-workout-type"
@@ -276,13 +276,13 @@ export default function SmartDayLogger({ open, onClose }) {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Duration (min)</label>
+                      <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Duration (min)</label>
                       <input type="number" data-testid="wizard-workout-duration"
                         className="input-dark w-full text-sm" placeholder="45"
                         value={workoutDuration} onChange={e => setWorkoutDuration(e.target.value)} />
                     </div>
                     <div>
-                      <label className="text-xs mb-1 block" style={{ color: 'rgba(228,238,240,0.5)' }}>Calories (opt)</label>
+                      <label className="text-xs mb-1 block" style={{ color: 'rgba(61,31,10,0.6)' }}>Calories (opt)</label>
                       <input type="number" data-testid="wizard-workout-calories"
                         className="input-dark w-full text-sm" placeholder="350"
                         value={workoutCalories} onChange={e => setWorkoutCalories(e.target.value)} />
@@ -297,7 +297,7 @@ export default function SmartDayLogger({ open, onClose }) {
               <button
                 onClick={handleSkip}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                style={{ background: 'rgba(228,238,240,0.06)', color: 'rgba(228,238,240,0.5)' }}
+                style={{ background: 'rgba(255,91,4,0.1)', color: 'rgba(61,31,10,0.6)' }}
                 data-testid="wizard-skip-btn"
               >
                 Skip

@@ -31,19 +31,19 @@ export default function DateNav() {
         data-testid="date-prev-btn"
         onClick={() => shift(-1)}
         className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
-        style={{ color: 'rgba(228,238,240,0.5)' }}
+        style={{ color: 'rgba(61,31,10,0.6)' }}
       >
         <ChevronLeft size={16} />
       </button>
 
       <div
         className="flex items-center gap-1.5 px-3 py-1 rounded-lg"
-        style={{ background: 'rgba(228,238,240,0.05)', border: '1px solid rgba(228,238,240,0.08)' }}
+        style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,91,4,0.12)' }}
       >
-        <Calendar size={12} style={{ color: 'rgba(228,238,240,0.4)' }} />
+        <Calendar size={12} style={{ color: 'rgba(61,31,10,0.55)' }} />
         <span
           className="text-sm font-medium"
-          style={{ color: isToday ? '#FF5B04' : '#E4EEF0', fontFamily: 'Outfit, sans-serif' }}
+          style={{ color: isToday ? '#FF5B04' : '#3D1F0A', fontFamily: 'Outfit, sans-serif' }}
         >
           {label()}
         </span>
@@ -54,7 +54,7 @@ export default function DateNav() {
         onClick={() => shift(1)}
         disabled={isToday}
         className="p-1.5 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-30"
-        style={{ color: 'rgba(228,238,240,0.5)' }}
+        style={{ color: 'rgba(61,31,10,0.6)' }}
       >
         <ChevronRight size={16} />
       </button>

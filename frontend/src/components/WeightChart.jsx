@@ -18,14 +18,14 @@ function CustomTooltip({ active, payload, selectedRate }) {
   if (!data || data.week === undefined) return null;
 
   return (
-    <div style={{ background: '#1C2D35', border: '1px solid rgba(228,238,240,0.1)', borderRadius: 14, padding: '14px 16px', minWidth: 230, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-      <p style={{ fontFamily: 'Outfit, sans-serif', color: '#E4EEF0', fontWeight: 700, fontSize: 13, marginBottom: 8 }}>
+    <div style={{ background: '#1C2D35', border: '1px solid rgba(255,91,4,0.15)', borderRadius: 14, padding: '14px 16px', minWidth: 230, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+      <p style={{ fontFamily: 'Outfit, sans-serif', color: '#3D1F0A', fontWeight: 700, fontSize: 13, marginBottom: 8 }}>
         Week {data.week}
       </p>
       {data.actual && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, paddingBottom: 6, borderBottom: '1px solid rgba(228,238,240,0.06)' }}>
-          <span style={{ color: 'rgba(228,238,240,0.5)', fontSize: 11 }}>Recorded</span>
-          <span style={{ color: '#E4EEF0', fontWeight: 600, fontSize: 11 }}>{data.actual}kg</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, paddingBottom: 6, borderBottom: '1px solid rgba(255,91,4,0.1)' }}>
+          <span style={{ color: 'rgba(61,31,10,0.6)', fontSize: 11 }}>Recorded</span>
+          <span style={{ color: '#3D1F0A', fontWeight: 600, fontSize: 11 }}>{data.actual}kg</span>
         </div>
       )}
       {RATES.map(rate => {
@@ -37,7 +37,7 @@ function CustomTooltip({ active, payload, selectedRate }) {
           <div key={rate.value} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3px 0', opacity: isSelected ? 1 : 0.4 }}>
             <span style={{ color: rate.color, fontSize: 11, fontWeight: isSelected ? 700 : 400 }}>
               {isSelected ? '▶ ' : ''}{rate.label}
-              <span style={{ color: 'rgba(228,238,240,0.4)', fontWeight: 400 }}> ({rate.sublabel})</span>
+              <span style={{ color: 'rgba(61,31,10,0.55)', fontWeight: 400 }}> ({rate.sublabel})</span>
             </span>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <span style={{ color: '#fff', fontWeight: 700, fontSize: 12 }}>{w}kg</span>
@@ -47,7 +47,7 @@ function CustomTooltip({ active, payload, selectedRate }) {
         );
       })}
       {data.bmi_075 && (
-        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid rgba(228,238,240,0.06)' }}>
+        <div style={{ marginTop: 8, paddingTop: 6, borderTop: '1px solid rgba(255,91,4,0.1)' }}>
           <span style={{ color: 'rgba(228,238,240,0.35)', fontSize: 10 }}>BMI @ 0.75kg/wk: {data.bmi_075}</span>
         </div>
       )}
@@ -144,8 +144,8 @@ export default function WeightChart() {
                     data-testid={`rate-btn-${rate.value}`}
                     className="flex flex-col items-center px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
                     style={{
-                      background: isActive ? `rgba(${rate.colorRgb},0.15)` : 'rgba(228,238,240,0.04)',
-                      border: `1.5px solid ${isActive ? rate.color : 'rgba(228,238,240,0.08)'}`,
+                      background: isActive ? `rgba(${rate.colorRgb},0.15)` : 'rgba(255,255,255,0.5)',
+                      border: `1.5px solid ${isActive ? rate.color : 'rgba(255,91,4,0.12)'}`,
                       color: isActive ? rate.color : 'rgba(228,238,240,0.35)',
                       boxShadow: isActive ? `0 0 16px rgba(${rate.colorRgb},0.2)` : 'none',
                     }}
@@ -170,9 +170,9 @@ export default function WeightChart() {
                   onClick={() => setSelectedRate(rate.value)}
                   className="px-3 py-1.5 rounded-lg text-xs transition-all duration-200"
                   style={{
-                    background: isActive ? `rgba(${rate.colorRgb},0.12)` : 'rgba(228,238,240,0.03)',
-                    border: `1px solid ${isActive ? `rgba(${rate.colorRgb},0.4)` : 'rgba(228,238,240,0.06)'}`,
-                    color: isActive ? rate.color : 'rgba(228,238,240,0.3)',
+                    background: isActive ? `rgba(${rate.colorRgb},0.12)` : 'rgba(255,255,255,0.4)',
+                    border: `1px solid ${isActive ? `rgba(${rate.colorRgb},0.4)` : 'rgba(255,91,4,0.1)'}`,
+                    color: isActive ? rate.color : 'rgba(61,31,10,0.45)',
                     cursor: 'pointer',
                   }}
                   data-testid={`goal-chip-${rate.value}`}
@@ -200,8 +200,8 @@ export default function WeightChart() {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gradActualWC" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#E4EEF0" stopOpacity={0.25} />
-                    <stop offset="100%" stopColor="#E4EEF0" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#3D1F0A" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#3D1F0A" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradSafe05" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#22C55E" stopOpacity={0.18} />
@@ -249,9 +249,9 @@ export default function WeightChart() {
 
                 {/* Actual recorded weights — ON TOP (rendered last) */}
                 <Area type="monotone" dataKey="actual" name="Actual"
-                  stroke="#E4EEF0" strokeWidth={2.5}
+                  stroke="#3D1F0A" strokeWidth={2.5}
                   fill="url(#gradActualWC)"
-                  dot={{ r: 4, fill: '#E4EEF0', stroke: '#16232A', strokeWidth: 2 }}
+                  dot={{ r: 4, fill: '#3D1F0A', stroke: '#FFF3E0', strokeWidth: 2 }}
                   connectNulls={false} animationDuration={1500} />
               </AreaChart>
             </ResponsiveContainer>
@@ -270,24 +270,24 @@ export default function WeightChart() {
                   = {(selectedInfo.value * 7700 / 7).toFixed(0)} kcal/wk
                 </span>
               </div>
-              <div className="text-xs" style={{ color: 'rgba(228,238,240,0.4)' }}>
+              <div className="text-xs" style={{ color: 'rgba(61,31,10,0.55)' }}>
                 {matchingRate ? (
                   <span>
-                    Your <span className="font-semibold" style={{ color: '#E4EEF0' }}>{stats.deficit} cal</span> deficit{' '}
+                    Your <span className="font-semibold" style={{ color: '#3D1F0A' }}>{stats.deficit} cal</span> deficit{' '}
                     → <span className="font-semibold" style={{ color: matchingRate.color }}>tracks {matchingRate.label}</span> 🎯
                   </span>
                 ) : (
                   <span>
-                    Current: <span className="font-semibold" style={{ color: '#E4EEF0' }}>{stats.deficit} cal</span> deficit
+                    Current: <span className="font-semibold" style={{ color: '#3D1F0A' }}>{stats.deficit} cal</span> deficit
                   </span>
                 )}
               </div>
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-[10px]" style={{ color: 'rgba(228,238,240,0.3)' }}>
+            <div className="flex flex-wrap items-center justify-center gap-4 text-[10px]" style={{ color: 'rgba(61,31,10,0.45)' }}>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-0.5 rounded" style={{ background: '#E4EEF0' }} /> Actual
+                <span className="w-3 h-0.5 rounded" style={{ background: '#3D1F0A' }} /> Actual
               </span>
               {RATES.map(r => (
                 <span key={r.value} className="flex items-center gap-1.5"

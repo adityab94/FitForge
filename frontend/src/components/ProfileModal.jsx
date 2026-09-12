@@ -46,7 +46,7 @@ export default function ProfileModal({ open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card-static border-white/10 max-w-md" style={{ background: '#16232A' }} data-testid="profile-modal">
+      <DialogContent className="glass-card-static border-white/10 max-w-md" style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)' }} data-testid="profile-modal">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Edit Profile
