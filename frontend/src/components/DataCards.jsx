@@ -27,7 +27,7 @@ function NutritionCard() {
   const fatPct = totalCal > 0 ? 100 - carbsPct - proteinPct : 30;
 
   const macros = [
-    { name: 'Carbs', value: carbsPct, color: '#D97757' },
+    { name: 'Carbs', value: carbsPct, color: '#B8543C' },
     { name: 'Protein', value: proteinPct, color: '#075056' },
     { name: 'Fat', value: fatPct, color: '#3D1F0A' },
   ];
@@ -45,7 +45,7 @@ function NutritionCard() {
     setSaving(true);
     try {
       await logNutritionManual({ mode, ...form });
-      confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 }, colors: ['#D97757', '#075056'] });
+      confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 }, colors: ['#B8543C', '#075056'] });
       setOpen(false);
       setForm({ calories: '', carbs: '', protein: '', fat: '' });
     } catch (e) { setError('Failed to save'); }
@@ -57,7 +57,7 @@ function NutritionCard() {
     setError('');
     try {
       await copyNutritionFromYesterday();
-      confetti({ particleCount: 40, spread: 30, origin: { y: 0.7 }, colors: ['#D97757', '#075056'] });
+      confetti({ particleCount: 40, spread: 30, origin: { y: 0.7 }, colors: ['#B8543C', '#075056'] });
       setOpen(false);
     } catch (e) {
       setError('No data found for yesterday');
@@ -72,18 +72,18 @@ function NutritionCard() {
     <div className="glass-card p-4 md:p-5 anim-scale-in delay-400" data-testid="nutrition-card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-[#D97757]/10">
-            <Utensils size={14} className="text-[#D97757]" strokeWidth={2} />
+          <div className="p-1.5 rounded-lg bg-[#B8543C]/10">
+            <Utensils size={14} className="text-[#B8543C]" strokeWidth={2} />
           </div>
           <span className="text-sm font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>Nutrition</span>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <button
-              className="btn-glow p-1.5 rounded-lg bg-[#D97757]/10 hover:bg-[#D97757]/20 transition-colors"
+              className="btn-glow p-1.5 rounded-lg bg-[#B8543C]/10 hover:bg-[#B8543C]/20 transition-colors"
               data-testid="log-nutrition-btn"
             >
-              <Plus size={14} className="text-[#D97757]" />
+              <Plus size={14} className="text-[#B8543C]" />
             </button>
           </DialogTrigger>
           <DialogContent className="glass-card-static border-white/10 max-w-sm" style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)' }} data-testid="nutrition-modal">
@@ -101,7 +101,7 @@ function NutritionCard() {
               onClick={handleCopyYesterday}
               disabled={copying}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium transition-all"
-              style={{ background: 'rgba(217,119,87,0.1)', color: 'rgba(228,238,240,0.6)', border: '1px solid rgba(217,119,87,0.15)' }}
+              style={{ background: 'rgba(184,84,60,0.1)', color: 'rgba(228,238,240,0.6)', border: '1px solid rgba(184,84,60,0.15)' }}
               data-testid="copy-yesterday-btn"
             >
               {copying ? <Loader2 size={13} className="animate-spin" /> : <Copy size={13} />}
@@ -111,9 +111,9 @@ function NutritionCard() {
             {error && <p className="text-xs text-center" style={{ color: '#EF4444' }}>{error}</p>}
 
             <div className="flex items-center gap-2 my-1">
-              <div className="flex-1 h-px" style={{ background: 'rgba(217,119,87,0.12)' }} />
+              <div className="flex-1 h-px" style={{ background: 'rgba(184,84,60,0.12)' }} />
               <span className="text-[10px]" style={{ color: 'rgba(61,31,10,0.45)' }}>or enter manually</span>
-              <div className="flex-1 h-px" style={{ background: 'rgba(217,119,87,0.12)' }} />
+              <div className="flex-1 h-px" style={{ background: 'rgba(184,84,60,0.12)' }} />
             </div>
 
             {/* Mode toggle */}
@@ -121,7 +121,7 @@ function NutritionCard() {
               {['total', 'macros'].map(m => (
                 <button key={m} onClick={() => setMode(m)} data-testid={`nutrition-mode-${m}`}
                   className="flex-1 py-1.5 rounded-lg text-xs font-medium transition-all"
-                  style={{ background: mode === m ? '#D97757' : 'rgba(217,119,87,0.1)', color: mode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
+                  style={{ background: mode === m ? '#B8543C' : 'rgba(184,84,60,0.1)', color: mode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                   {m === 'total' ? 'Quick (Calories)' : 'Breakdown (Macros)'}
                 </button>
               ))}
@@ -153,7 +153,7 @@ function NutritionCard() {
                     </div>
                   ))}
                   {(form.carbs || form.protein || form.fat) && (
-                    <p className="text-xs font-semibold" style={{ color: '#D97757' }}>
+                    <p className="text-xs font-semibold" style={{ color: '#B8543C' }}>
                       = {calcCalFromMacros()} cal total
                     </p>
                   )}
@@ -161,7 +161,7 @@ function NutritionCard() {
               )}
               <button type="submit" disabled={saving} data-testid="nutrition-submit-btn"
                 className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50"
-                style={{ background: '#D97757' }}>
+                style={{ background: '#B8543C' }}>
                 {saving ? <Loader2 size={16} className="animate-spin mx-auto" /> : 'Save'}
               </button>
             </form>
@@ -292,7 +292,7 @@ function ActivityCard() {
                 style={{ transition: 'stroke-dashoffset 1.5s ease-out' }} />
               <defs>
                 <linearGradient id="activityGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#D97757" />
+                  <stop offset="0%" stopColor="#B8543C" />
                   <stop offset="100%" stopColor="#075056" />
                 </linearGradient>
               </defs>
@@ -304,7 +304,7 @@ function ActivityCard() {
           </div>
           <div className="flex justify-between mt-4 text-[10px] px-2" style={{ color: 'rgba(61,31,10,0.45)' }}>
             <span>0</span>
-            <span style={{ color: '#D97757' }}>{Math.round(percentage)}%</span>
+            <span style={{ color: '#B8543C' }}>{Math.round(percentage)}%</span>
             <span>{goal} cal</span>
           </div>
 
@@ -352,7 +352,7 @@ function WorkoutsCard() {
       calories: parseInt(form.calories),
       notes: form.notes
     });
-    confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, colors: ['#D97757', '#D97757', '#D97757'] });
+    confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, colors: ['#B8543C', '#B8543C', '#B8543C'] });
     setForm({ type: '', duration: '', calories: '', notes: '' });
     setOpen(false);
   };
@@ -361,15 +361,15 @@ function WorkoutsCard() {
     <div className="glass-card p-4 md:p-5 anim-scale-in delay-600" data-testid="workouts-card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-[#D97757]/10">
-            <Dumbbell size={14} className="text-[#D97757]" strokeWidth={2} />
+          <div className="p-1.5 rounded-lg bg-[#B8543C]/10">
+            <Dumbbell size={14} className="text-[#B8543C]" strokeWidth={2} />
           </div>
           <span className="text-sm font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>Workouts</span>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <button className="btn-glow p-1.5 rounded-lg bg-[#D97757]/10 hover:bg-[#D97757]/20 transition-colors" data-testid="add-workout-button">
-              <Plus size={14} className="text-[#D97757]" />
+            <button className="btn-glow p-1.5 rounded-lg bg-[#B8543C]/10 hover:bg-[#B8543C]/20 transition-colors" data-testid="add-workout-button">
+              <Plus size={14} className="text-[#B8543C]" />
             </button>
           </DialogTrigger>
           <DialogContent className="glass-card-static border-white/10 max-w-md" style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)' }} data-testid="add-workout-modal">
@@ -396,7 +396,7 @@ function WorkoutsCard() {
                 <label className="text-xs text-slate-500 mb-1 block">Notes</label>
                 <input className="input-dark w-full" placeholder="Optional notes..." value={form.notes} onChange={(e) => setForm({...form, notes: e.target.value})} data-testid="workout-notes-input" />
               </div>
-              <button type="submit" className="btn-glow w-full py-3 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: '#D97757' }} data-testid="submit-workout-button">
+              <button type="submit" className="btn-glow w-full py-3 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: '#B8543C' }} data-testid="submit-workout-button">
                 Add Workout
               </button>
             </form>
@@ -503,7 +503,7 @@ function MeasurementsCard() {
               <div className="h-[50px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chestData}>
-                    <Line type="monotone" dataKey="val" stroke="#D97757" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="val" stroke="#B8543C" strokeWidth={2} dot={false} />
                     <YAxis hide domain={['auto', 'auto']} />
                     <XAxis hide dataKey="i" />
                   </LineChart>

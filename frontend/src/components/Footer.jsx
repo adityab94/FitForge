@@ -17,7 +17,7 @@ export default function Footer() {
       await addWeightLog(val);
       // Milestone check
       if (stats?.goal_kg && val <= stats.goal_kg) {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#D97757', '#D97757', '#D97757', '#D97757'] });
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ['#B8543C', '#B8543C', '#B8543C', '#B8543C'] });
       }
       setWeight('');
     } finally {
@@ -56,7 +56,7 @@ export default function Footer() {
             type="submit"
             disabled={loading || !weight}
             className="btn-glow px-4 py-2 rounded-xl text-xs font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: '#D97757' }}
+            style={{ background: '#B8543C' }}
             data-testid="weighin-submit"
           >
             {loading ? 'Saving...' : 'Update'}

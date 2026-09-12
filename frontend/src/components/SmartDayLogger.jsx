@@ -4,7 +4,7 @@ import { X, ChevronRight, Check, Loader2, Zap, Footprints, Droplets, Dumbbell } 
 import confetti from 'canvas-confetti';
 
 const STEPS = [
-  { id: 'nutrition', icon: Zap, label: 'Nutrition', color: '#D97757' },
+  { id: 'nutrition', icon: Zap, label: 'Nutrition', color: '#B8543C' },
   { id: 'steps', icon: Footprints, label: 'Steps', color: '#075056' },
   { id: 'water', icon: Droplets, label: 'Water', color: '#3B82F6' },
   { id: 'workout', icon: Dumbbell, label: 'Workout', color: '#8B5CF6' },
@@ -70,7 +70,7 @@ export default function SmartDayLogger({ open, onClose }) {
         setStep(s => s + 1);
       } else {
         setDone(true);
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#D97757', '#075056', '#3D1F0A'] });
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#B8543C', '#075056', '#3D1F0A'] });
       }
     } catch (e) {
       console.error(e);
@@ -83,7 +83,7 @@ export default function SmartDayLogger({ open, onClose }) {
       setStep(s => s + 1);
     } else {
       setDone(true);
-      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#D97757', '#075056'] });
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#B8543C', '#075056'] });
     }
   };
 
@@ -106,7 +106,7 @@ export default function SmartDayLogger({ open, onClose }) {
     >
       <div
         className="w-full max-w-sm rounded-2xl p-6 relative"
-        style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)', border: '1px solid rgba(217,119,87,0.15)' }}
+        style={{ background: 'linear-gradient(160deg, #FFF8F0 0%, #FFE0C0 100%)', border: '1px solid rgba(184,84,60,0.15)' }}
         data-testid="smart-logger-modal"
       >
         <button
@@ -121,7 +121,7 @@ export default function SmartDayLogger({ open, onClose }) {
         {done ? (
           <div className="text-center py-4" data-testid="smart-logger-done">
             <div className="text-5xl mb-4">🎯</div>
-            <h2 className="text-xl font-bold mb-2" style={{ fontFamily: 'Outfit, sans-serif', color: '#D97757' }}>
+            <h2 className="text-xl font-bold mb-2" style={{ fontFamily: 'Outfit, sans-serif', color: '#B8543C' }}>
               Day logged!
             </h2>
             <p className="text-sm mb-6" style={{ color: 'rgba(61,31,10,0.6)' }}>
@@ -130,7 +130,7 @@ export default function SmartDayLogger({ open, onClose }) {
             <button
               onClick={reset}
               className="w-full py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ background: '#D97757' }}
+              style={{ background: '#B8543C' }}
               data-testid="smart-logger-done-btn"
             >
               Done
@@ -159,7 +159,7 @@ export default function SmartDayLogger({ open, onClose }) {
                   <div
                     key={s.id}
                     className="flex-1 h-1 rounded-full transition-all"
-                    style={{ background: i <= step ? s.color : 'rgba(217,119,87,0.15)' }}
+                    style={{ background: i <= step ? s.color : 'rgba(184,84,60,0.15)' }}
                   />
                 );
               })}
@@ -175,7 +175,7 @@ export default function SmartDayLogger({ open, onClose }) {
                     {['total', 'macros'].map(m => (
                       <button key={m} onClick={() => setNutMode(m)} data-testid={`wizard-mode-${m}`}
                         className="flex-1 py-2 rounded-lg text-xs font-medium transition-all capitalize"
-                        style={{ background: nutMode === m ? '#D97757' : 'rgba(217,119,87,0.1)', color: nutMode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
+                        style={{ background: nutMode === m ? '#B8543C' : 'rgba(184,84,60,0.1)', color: nutMode === m ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                         {m === 'total' ? 'Quick (calories)' : 'By macros'}
                       </button>
                     ))}
@@ -207,7 +207,7 @@ export default function SmartDayLogger({ open, onClose }) {
                         </div>
                       ))}
                       {(carbs || protein || fat) && (
-                        <p className="text-xs font-semibold" style={{ color: '#D97757' }}>= {calcCalFromMacros()} cal total</p>
+                        <p className="text-xs font-semibold" style={{ color: '#B8543C' }}>= {calcCalFromMacros()} cal total</p>
                       )}
                     </div>
                   )}
@@ -252,7 +252,7 @@ export default function SmartDayLogger({ open, onClose }) {
                       <button key={n} onClick={() => setWaterVal(String(n))}
                         data-testid={`wizard-water-${n}`}
                         className="px-3 py-1 rounded-lg text-xs transition-colors"
-                        style={{ background: waterVal === String(n) ? '#3B82F6' : 'rgba(217,119,87,0.1)', color: waterVal === String(n) ? '#fff' : 'rgba(61,31,10,0.6)' }}>
+                        style={{ background: waterVal === String(n) ? '#3B82F6' : 'rgba(184,84,60,0.1)', color: waterVal === String(n) ? '#fff' : 'rgba(61,31,10,0.6)' }}>
                         {n}
                       </button>
                     ))}
@@ -297,7 +297,7 @@ export default function SmartDayLogger({ open, onClose }) {
               <button
                 onClick={handleSkip}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                style={{ background: 'rgba(217,119,87,0.1)', color: 'rgba(61,31,10,0.6)' }}
+                style={{ background: 'rgba(184,84,60,0.1)', color: 'rgba(61,31,10,0.6)' }}
                 data-testid="wizard-skip-btn"
               >
                 Skip

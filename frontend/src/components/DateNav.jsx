@@ -38,12 +38,12 @@ export default function DateNav() {
 
       <div
         className="flex items-center gap-1.5 px-3 py-1 rounded-lg"
-        style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(217,119,87,0.12)' }}
+        style={{ background: 'rgba(255,255,255,0.55)', border: '1px solid rgba(184,84,60,0.12)' }}
       >
         <Calendar size={12} style={{ color: 'rgba(61,31,10,0.55)' }} />
         <span
           className="text-sm font-medium"
-          style={{ color: isToday ? '#D97757' : '#3D1F0A', fontFamily: 'Outfit, sans-serif' }}
+          style={{ color: isToday ? '#B8543C' : '#3D1F0A', fontFamily: 'Outfit, sans-serif' }}
         >
           {label()}
         </span>
@@ -64,7 +64,7 @@ export default function DateNav() {
           data-testid="date-today-btn"
           onClick={() => changeDate(today)}
           className="ml-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-colors"
-          style={{ background: 'rgba(217,119,87,0.15)', color: '#D97757', border: '1px solid rgba(217,119,87,0.3)' }}
+          style={{ background: 'rgba(184,84,60,0.15)', color: '#B8543C', border: '1px solid rgba(184,84,60,0.3)' }}
         >
           Today
         </button>

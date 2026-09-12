@@ -30,7 +30,7 @@ function Dashboard() {
     return (
       <div className="app-bg flex items-center justify-center min-h-screen" data-testid="loading-screen">
         <div className="flex flex-col items-center gap-4 anim-fade-in">
-          <Loader2 size={32} className="animate-spin" style={{ color: '#D97757' }} />
+          <Loader2 size={32} className="animate-spin" style={{ color: '#B8543C' }} />
           <p className="text-sm" style={{ color: 'rgba(61,31,10,0.6)' }}>Loading your dashboard...</p>
         </div>
       </div>
@@ -50,9 +50,9 @@ function Dashboard() {
               onClick={() => setSmartLogOpen(true)}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold text-sm transition-all hover:opacity-90 active:scale-[0.98]"
               style={{
-                background: 'linear-gradient(135deg, #D97757 0%, #B85E45 100%)',
+                background: 'linear-gradient(135deg, #B8543C 0%, #8B3D2A 100%)',
                 color: '#fff',
-                boxShadow: '0 4px 20px rgba(217,119,87,0.3)'
+                boxShadow: '0 4px 20px rgba(184,84,60,0.3)'
               }}
               data-testid="smart-log-btn"
             >
@@ -84,7 +84,7 @@ function AuthGate() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #FFFBF5 0%, #FFEEDC 100%)' }}>
-        <Loader2 size={32} className="animate-spin" style={{ color: '#D97757' }} />
+        <Loader2 size={32} className="animate-spin" style={{ color: '#B8543C' }} />
       </div>
     );
   }

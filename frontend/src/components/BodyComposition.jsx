@@ -35,8 +35,8 @@ export default function BodyComposition() {
   const catColor = result ? (
     result.category === 'Athletic' || result.category === 'Essential' ? '#075056' :
     result.category === 'Fitness' ? '#075056' :
-    result.category === 'Average' ? '#D97757' : '#EF4444'
-  ) : '#D97757';
+    result.category === 'Average' ? '#B8543C' : '#EF4444'
+  ) : '#B8543C';
 
   return (
     <section className="px-4 md:px-6 py-4 anim-slide-up delay-400" data-testid="body-composition-section">
@@ -44,8 +44,8 @@ export default function BodyComposition() {
         <div className="glass-card p-4 md:p-6">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl" style={{ background: 'rgba(217,119,87,0.1)' }}>
-                <User size={18} style={{ color: '#D97757' }} strokeWidth={1.5} />
+              <div className="p-2 rounded-xl" style={{ background: 'rgba(184,84,60,0.1)' }}>
+                <User size={18} style={{ color: '#B8543C' }} strokeWidth={1.5} />
               </div>
               <div>
                 <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: 'Outfit, sans-serif' }} data-testid="body-comp-title">
@@ -61,7 +61,7 @@ export default function BodyComposition() {
                     <Info size={14} style={{ color: 'rgba(61,31,10,0.45)' }} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-[220px] text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(217,119,87,0.15)' }}>
+                <TooltipContent side="left" className="max-w-[220px] text-[11px]" style={{ background: '#1C2D35', color: '#3D1F0A', border: '1px solid rgba(184,84,60,0.15)' }}>
                   U.S. Navy body fat formula. Requires waist and neck circumference measurements in cm.
                 </TooltipContent>
               </Tooltip>
@@ -85,7 +85,7 @@ export default function BodyComposition() {
                   <input type="number" step="0.1" className="input-dark w-full" placeholder="e.g. 100" value={form.hip} onChange={(e) => setForm({...form, hip: e.target.value})} data-testid="body-comp-hip" />
                 </div>
               )}
-              <button type="submit" disabled={loading} className="btn-glow w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50" style={{ background: '#D97757' }} data-testid="body-comp-submit">
+              <button type="submit" disabled={loading} className="btn-glow w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50" style={{ background: '#B8543C' }} data-testid="body-comp-submit">
                 {loading ? 'Calculating...' : 'Calculate Body Fat'}
               </button>
             </form>
@@ -95,7 +95,7 @@ export default function BodyComposition() {
               <div className="flex flex-col items-center justify-center">
                 <div className="relative w-[130px] h-[130px] mb-3">
                   <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(217,119,87,0.1)" strokeWidth="8" />
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(184,84,60,0.1)" strokeWidth="8" />
                     <circle cx="60" cy="60" r="50" fill="none" stroke={catColor} strokeWidth="8" strokeLinecap="round"
                       strokeDasharray={circumference} strokeDashoffset={dashOffset}
                       style={{ transition: 'stroke-dashoffset 1.5s ease-out', filter: `drop-shadow(0 0 8px ${catColor}40)` }} />
@@ -114,7 +114,7 @@ export default function BodyComposition() {
                     <p className="text-[10px]" style={{ color: 'rgba(228,238,240,0.35)' }}>lean mass</p>
                   </div>
                   <div>
-                    <p className="stat-number text-lg" style={{ color: '#D97757' }}>{result.fat_mass}kg</p>
+                    <p className="stat-number text-lg" style={{ color: '#B8543C' }}>{result.fat_mass}kg</p>
                     <p className="text-[10px]" style={{ color: 'rgba(228,238,240,0.35)' }}>fat mass</p>
                   </div>
                 </div>
